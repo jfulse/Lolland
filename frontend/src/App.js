@@ -1,41 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
+import { configure } from 'mobx';
 import { apiClient } from 'mobx-rest';
 import createAdapter from 'mobx-rest-axios-adapter';
 import axios from 'axios';
-import {
-  branch, compose, lifecycle, renderComponent, withState,
-} from 'recompose';
+import { compose, lifecycle } from 'recompose';
 import queryString from 'query-string';
 
-import { Loader } from './components';
+import { Header } from './components';
+import { waitForUserProfile } from './enhancers';
 
 const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
 
 // TOTO: Get from .env
 const SERVER_URL = 'http://localhost:8888';
 
-const App = ({ userProfile }) => (
+configure({ enforceActions: 'observed' });
+
+const App = ({ game: { category } }) => (
   <div>
-    <strong>User:</strong>
+    <Header />
     <br />
-    <ul>
-      {Object.entries(userProfile).map(([key, value]) => (
-        <li key={key} style={{ listStyle: 'none', margin: '5px' }}>
-          <i>{key}</i>
-          :&nbsp;&nbsp;
-          {value}
-        </li>
-      ))}
-    </ul>
+    {!category && (
+      <div>
+        Choose category:
+      </div>
+    )}
   </div>
 );
 
 App.propTypes = {
-  userProfile: PropTypes.shape({
-    email: PropTypes.string,
-    id: PropTypes.string,
+  game: PropTypes.shape({
+    category: PropTypes.string,
   }).isRequired,
 };
 
@@ -45,7 +42,6 @@ const initialise = lifecycle({
       auth: { setToken, setRefreshToken },
       route: { location: { hash }, push },
       user,
-      setUserProfile,
     } = this.props;
     const {
       access_token: accessToken,
@@ -69,13 +65,7 @@ const initialise = lifecycle({
 
       await user.fetch();
 
-      setUserProfile({
-        email: user.get('email'),
-        name: user.get('id'),
-        account: user.get('product'),
-        country: user.get('country'),
-        followers: user.get('followers').total,
-      });
+      this.forceUpdate();
     } else {
       console.log('Access token not found; redirecting to login');
       window.location.replace(`${SERVER_URL}/login`);
@@ -83,17 +73,12 @@ const initialise = lifecycle({
   },
 });
 
-const waitForUserProfile = branch(
-  ({ userProfile }) => !userProfile,
-  renderComponent(Loader),
-);
-
 export default compose(
   inject('route'),
   inject('auth'),
   inject('user'),
+  inject('game'),
   observer,
-  withState('userProfile', 'setUserProfile', null),
   initialise,
   waitForUserProfile,
 )(App);

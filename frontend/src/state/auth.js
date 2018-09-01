@@ -1,8 +1,4 @@
-import {
-  action, configure, decorate, observable,
-} from 'mobx';
-
-configure({ enforceActions: 'observed' });
+import { action, decorate, observable } from 'mobx';
 
 class Auth {
   constructor() {

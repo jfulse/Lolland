@@ -1,14 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { configure } from 'mobx';
 import { apiClient } from 'mobx-rest';
 import createAdapter from 'mobx-rest-axios-adapter';
+import { Route, Switch } from 'react-router-dom';
 import axios from 'axios';
 import { compose, lifecycle } from 'recompose';
 import queryString from 'query-string';
 
-import { Header } from './components';
+import { Categories, GuessArtist, Header } from './components';
 import { waitForUserProfile } from './enhancers';
 
 const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
@@ -18,23 +18,15 @@ const SERVER_URL = 'http://localhost:8888';
 
 configure({ enforceActions: 'observed' });
 
-const App = ({ game: { category } }) => (
+const App = () => (
   <div>
     <Header />
-    <br />
-    {!category && (
-      <div>
-        Choose category:
-      </div>
-    )}
+    <Switch>
+      <Route exact path="/" component={Categories} />
+      <Route exact path="/guess-artist" component={GuessArtist} />
+    </Switch>
   </div>
 );
-
-App.propTypes = {
-  game: PropTypes.shape({
-    category: PropTypes.string,
-  }).isRequired,
-};
 
 const initialise = lifecycle({
   async componentDidMount() {
@@ -77,7 +69,6 @@ export default compose(
   inject('route'),
   inject('auth'),
   inject('user'),
-  inject('game'),
   observer,
   initialise,
   waitForUserProfile,

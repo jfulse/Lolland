@@ -7,7 +7,7 @@ import { waitForUserProfile } from '../../enhancers';
 
 const Header = ({ user }) => (
   <div style={{
-    fontSize: '12px', textAlign: 'center', margin: '10px 0 40px', border: '1px solid black',
+    fontSize: '13px', textAlign: 'center', margin: '10px 0 40px', border: '1px solid black',
   }}
   >
     <h1>

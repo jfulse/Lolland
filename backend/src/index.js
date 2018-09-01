@@ -5,8 +5,8 @@ const querystring = require('querystring');
 const cookieParser = require('cookie-parser');
 
 // TODO: Get these from .env
-const CLIENT_ID = 'REDACTED';
-const CLIENT_SECRET = 'REDACTED';
+const CLIENT_ID = '922ce59a255246b1a201c00ceea1018c';
+const CLIENT_SECRET = 'f61624ec785049b18d7b24d224f596a1';
 const CALLBACK_URL = 'http://localhost:8888/callback/';
 const WEB_HOST_URL = 'http://localhost:8080';
 

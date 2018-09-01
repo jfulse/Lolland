@@ -11,8 +11,10 @@ import queryString from 'query-string';
 
 import { Loader } from './components';
 
-// TODO: Get from .env
 const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
+
+// TOTO: Get from .env
+const SERVER_URL = 'http://localhost:8888';
 
 const App = ({ userProfile }) => (
   <div>
@@ -37,11 +39,11 @@ App.propTypes = {
   }).isRequired,
 };
 
-const withInitialise = lifecycle({
+const initialise = lifecycle({
   async componentDidMount() {
     const {
       auth: { setToken, setRefreshToken },
-      route: { location: { hash } },
+      route: { location: { hash }, push },
       user,
       setUserProfile,
     } = this.props;
@@ -50,30 +52,41 @@ const withInitialise = lifecycle({
       refresh_token: refreshToken,
     } = queryString.parse(hash);
 
-    setToken(accessToken);
-    setRefreshToken(refreshToken);
+    if (accessToken) {
+      setToken(accessToken);
+      setRefreshToken(refreshToken);
+      push('/');
 
-    const axiosAdapter = createAdapter(axios);
-    apiClient(axiosAdapter, {
-      apiPath: SPOTIFY_API_URL,
-      commonOptions: {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+      const axiosAdapter = createAdapter(axios);
+      apiClient(axiosAdapter, {
+        apiPath: SPOTIFY_API_URL,
+        commonOptions: {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
-      },
-    });
+      });
 
-    await user.fetch();
+      await user.fetch();
 
-    setUserProfile({
-      email: user.get('email'),
-      name: user.get('id'),
-      account: user.get('product'),
-      country: user.get('country'),
-      followers: user.get('followers').total,
-    });
+      setUserProfile({
+        email: user.get('email'),
+        name: user.get('id'),
+        account: user.get('product'),
+        country: user.get('country'),
+        followers: user.get('followers').total,
+      });
+    } else {
+      console.log('Access token not found; redirecting to login');
+      window.location.replace(`${SERVER_URL}/login`);
+    }
   },
 });
+
+const waitForUserProfile = branch(
+  ({ userProfile }) => !userProfile,
+  renderComponent(Loader),
+);
 
 export default compose(
   inject('route'),
@@ -81,9 +94,6 @@ export default compose(
   inject('user'),
   observer,
   withState('userProfile', 'setUserProfile', null),
-  withInitialise,
-  branch(
-    ({ userProfile }) => !userProfile,
-    renderComponent(Loader),
-  ),
+  initialise,
+  waitForUserProfile,
 )(App);

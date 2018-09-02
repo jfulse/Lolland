@@ -5,6 +5,8 @@ export default PropTypes.shape({
   current: PropTypes.shape({
     from: PropTypes.string,
   }),
+  showAnswer: PropTypes.bool.isRequired,
   setCategory: PropTypes.func.isRequired,
+  setShowAnswer: PropTypes.func.isRequired,
   setCurrent: PropTypes.func.isRequired,
 });

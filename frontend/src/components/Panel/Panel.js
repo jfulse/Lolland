@@ -9,10 +9,9 @@ const Wrapper = styled.div`
 `;
 
 const StyledPanel = styled.div`
-  width: 80%;
+  width: 90%;
   min-width: 500px;
   border: 1px solid black;
-  padding: 20px;
 `;
 
 const Panel = ({ children }) => (

@@ -7,3 +7,4 @@ export { default as Header } from './Header';
 export { default as Switch } from './Switch';
 export { default as Album } from './Album';
 export { default as Panel } from './Panel';
+export { default as If } from './If';

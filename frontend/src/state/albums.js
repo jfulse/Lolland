@@ -1,6 +1,8 @@
 import { Collection, Model } from 'mobx-rest';
 import { runInAction } from 'mobx';
 
+import { random } from '../utils';
+
 class Album extends Model {}
 
 class Albums extends Collection {
@@ -9,7 +11,6 @@ class Albums extends Collection {
   }
 
   set({ items }) {
-    console.log('set items', items);
     runInAction(() => {
       this.models = items;
     });
@@ -18,8 +19,7 @@ class Albums extends Collection {
   get(id) { // eslint-disable-line class-methods-use-this
     if (!id) {
       const nAlbums = this.models.length;
-      const idx = Math.floor(Math.random() * nAlbums);
-      console.log('will return ', this.models[idx].album);
+      const idx = random(nAlbums);
       return this.models[idx].album;
     }
     console.error('get by id not implemented yet!');

@@ -13,6 +13,7 @@ import { Categories, GuessArtist, Header } from './components';
 
 const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
 const STORAGE_TOKEN = 'lolland-token';
+const STORAGE_REFRESH_TOKEN = 'lolland-refresh-token';
 
 // TODO: Get from .env
 const SERVER_URL = 'http://localhost:8888';
@@ -32,19 +33,19 @@ const App = () => (
 const initialise = lifecycle({
   async componentDidMount() {
     const {
-      auth: { setToken, setRefreshToken },
+      auth: { setToken, setRefreshToken, refreshToken },
       route: { location: { hash }, push },
       user,
     } = this.props;
     const {
       access_token: hashToken,
-      refresh_token: refreshToken,
+      refresh_token: hashRefreshToken,
     } = queryString.parse(hash);
     let token;
 
     if (hashToken) {
       token = hashToken;
-      setRefreshToken(refreshToken);
+      setRefreshToken(hashRefreshToken);
       push('/');
     } else {
       token = localStorage.getItem(STORAGE_TOKEN);
@@ -52,6 +53,7 @@ const initialise = lifecycle({
 
     if (token) {
       runInAction(() => localStorage.setItem(STORAGE_TOKEN, token));
+      runInAction(() => localStorage.setItem(STORAGE_REFRESH_TOKEN, hashRefreshToken));
       setToken(token);
 
       const axiosAdapter = createAdapter(axios);
@@ -64,7 +66,26 @@ const initialise = lifecycle({
         },
       });
 
-      await user.fetch();
+      try {
+        await user.fetch();
+      } catch ({ error }) {
+        if (error && error.status && error.status === 401) {
+          const currentRefreshToken = refreshToken || localStorage.getItem(STORAGE_REFRESH_TOKEN);
+          if (currentRefreshToken) {
+            console.log('Using refresh access token', currentRefreshToken);
+            const { access_token: newAccessToken } = await axios.get(
+              `${SERVER_URL}/refresh_token/`,
+              queryString.stringify({ refresh_token: currentRefreshToken }),
+            );
+
+            runInAction(() => localStorage.setItem(STORAGE_TOKEN, newAccessToken));
+            setRefreshToken(newAccessToken);
+          } else {
+            console.log('Refresh access token not found; redirecting to login');
+            window.location.replace(`${SERVER_URL}/login`);
+          }
+        }
+      }
 
       this.forceUpdate(); // FIXME: Auto rerender on user update
     } else {

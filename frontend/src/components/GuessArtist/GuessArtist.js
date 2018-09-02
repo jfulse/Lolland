@@ -14,7 +14,8 @@ import { random, noop } from '../../utils';
 // TODO: Abstract guess from album to its own component
 
 const Question = styled.h3`
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const ActionsWrapper = styled.div`
@@ -77,15 +78,31 @@ class GuessArtist extends React.Component {
   }
 
   displayAnswer() {
-    const { setAnswer, game: { setShowAnswer } } = this.props;
+    const {
+      setAnswer,
+      answer: { result },
+      game: { setShowAnswer, increaseWrong },
+    } = this.props;
+
+    if (result === resultTypes.PENDING) {
+      increaseWrong();
+    }
     setShowAnswer(true);
     setAnswer(initialAnswer);
   }
 
   async newAlbum() {
     const {
-      albums, setAlbum, setAnswer, game: { setShowAnswer },
+      albums,
+      answer: { result },
+      setAlbum,
+      setAnswer,
+      game: { showAnswer, setShowAnswer, increaseWrong },
     } = this.props;
+
+    if (!showAnswer && result === resultTypes.PENDING) {
+      increaseWrong();
+    }
     setShowAnswer(false);
     await randomAlbum(albums, setAlbum);
     setAnswer(initialAnswer);
@@ -94,7 +111,7 @@ class GuessArtist extends React.Component {
   render() {
     const {
       game: {
-        showAnswer, current, setCurrent,
+        showAnswer, current, setCurrent, nCorrect, nWrong,
       },
       albums,
       album,
@@ -103,6 +120,7 @@ class GuessArtist extends React.Component {
       setAnswer,
       handleSubmit,
     } = this.props;
+    const inputDisabled = showAnswer || answer.result !== resultTypes.PENDING;
 
     if (!current) {
       return (
@@ -125,19 +143,24 @@ class GuessArtist extends React.Component {
       );
     }
 
-    const { from } = current;
-    const inputDisabled = showAnswer || answer.result !== resultTypes.PENDING;
-
     return (
       <div>
         <br />
         <Question>
-          Which artist created this&nbsp;
-          {from.toLowerCase()}
-          ?
+          <span>
+            Which artist created this&nbsp;
+            {current.from.toLowerCase()}
+            ?
+          </span>
+          <span>
+            {nCorrect}
+            &nbsp;/&nbsp;
+            {nCorrect + nWrong}
+            &nbsp; correct
+          </span>
         </Question>
         <br />
-        <Switch equals={from}>
+        <Switch equals={current.from}>
           <Switch.Case caseName={itemTypes.ALBUM}>
             <Album
               hideCover={!showAnswer}
@@ -153,6 +176,7 @@ class GuessArtist extends React.Component {
           <StyledButton
             type="button"
             onClick={this.displayAnswer}
+            disabled={showAnswer}
           >
             Show answer
           </StyledButton>
@@ -215,10 +239,10 @@ GuessArtist.defaultProps = {
   answer: initialAnswer,
 };
 
-const checkAlbumAnswer = (album, { value }, setAnswer) => {
+const checkAlbumAnswer = (album, { value }) => {
   const artists = album.artists.map(({ name }) => name.toLowerCase());
-  if (artists.includes(value)) setAnswer({ result: resultTypes.CORRECT, value: '' });
-  else setAnswer({ result: resultTypes.WRONG, value: '' });
+  if (artists.includes(value)) return true;
+  return false;
 };
 
 const withHandleSubmit = withProps(({
@@ -226,9 +250,21 @@ const withHandleSubmit = withProps(({
 }) => {
   let handleSubmit;
   if (game && game.current && game.current.from) {
+    const { increaseCorrect, increaseWrong } = game;
     switch (game.current.from) {
-      case itemTypes.ALBUM:
-        return { handleSubmit: () => checkAlbumAnswer(album, answer, setAnswer) };
+      case itemTypes.ALBUM: {
+        handleSubmit = () => {
+          const isCorrect = checkAlbumAnswer(album, answer);
+          if (isCorrect) {
+            setAnswer({ result: resultTypes.CORRECT, value: '' });
+            increaseCorrect();
+          } else {
+            setAnswer({ result: resultTypes.WRONG, value: '' });
+            increaseWrong();
+          }
+        };
+        break;
+      }
       default:
         handleSubmit = noop;
     }
@@ -246,4 +282,5 @@ export default compose(
   withState('album', 'setAlbum', null),
   withState('answer', 'setAnswer', initialAnswer),
   withHandleSubmit,
+  withProps(props => console.log('props', props) || {}),
 )(GuessArtist);

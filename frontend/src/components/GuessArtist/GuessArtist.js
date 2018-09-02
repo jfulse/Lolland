@@ -62,7 +62,12 @@ const AnnouncementWrapper = styled.div`
 `;
 
 const randomAlbum = async (albums, setAlbum) => {
-  const { total } = await albums.fetch();
+  let { total } = albums;
+  if (!total) {
+    const { total: fetchedTotal } = await albums.fetch();
+    total = fetchedTotal;
+    albums.setTotal(fetchedTotal);
+  }
   const offset = random(total);
   const baseUrl = albums.url();
   const urlWithQuery = `${baseUrl}/?offset=${offset}`;
@@ -74,7 +79,12 @@ const randomAlbum = async (albums, setAlbum) => {
 };
 
 const randomTrack = async (tracks, setTrack) => {
-  const { total } = await tracks.fetch();
+  let { total } = tracks;
+  if (!total) {
+    const { total: fetchedTotal } = await tracks.fetch();
+    total = fetchedTotal;
+    tracks.setTotal(fetchedTotal);
+  }
   const offset = random(total);
   const baseUrl = tracks.url();
   const urlWithQuery = `${baseUrl}/?offset=${offset}`;

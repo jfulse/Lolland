@@ -1,11 +1,25 @@
 import { Collection, Model } from 'mobx-rest';
-import { runInAction } from 'mobx';
+import {
+  action, decorate, observable, runInAction,
+} from 'mobx';
 
 import { random } from '../utils';
 
 class Track extends Model {}
 
 class Tracks extends Collection {
+  constructor() {
+    super();
+
+    runInAction(() => {
+      this.total = null;
+    });
+  }
+
+  setTotal(total) {
+    this.total = total;
+  }
+
   url() { // eslint-disable-line class-methods-use-this
     return '/me/tracks';
   }
@@ -30,5 +44,10 @@ class Tracks extends Collection {
     return Track;
   }
 }
+
+decorate(Tracks, {
+  total: observable,
+  setTotal: action,
+});
 
 export default new Tracks();

@@ -8,13 +8,20 @@ import { Children } from '../../propTypes';
 const StyledButton = styled.button`
   margin: 10px;
   cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
 `;
 
-const Alternative = ({ onClick, label, role }) => (
+const Alternative = ({
+  onClick, label, role, disabled,
+}) => (
   <StyledButton
     onClick={onClick}
     type="button"
     role={role}
+    disabled={disabled}
   >
     {label}
   </StyledButton>
@@ -24,10 +31,12 @@ Alternative.propTypes = {
   onClick: PropTypes.func.isRequired,
   label: PropTypes.string.isRequired,
   role: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 Alternative.defaultProps = {
   role: 'button',
+  disabled: false,
 };
 
 const StyledDiv = styled.div`

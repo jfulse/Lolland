@@ -7,7 +7,7 @@ import {
   Background, If, Panel, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
-import { Album as AlbumType } from '../../propTypes';
+import { Track as TrackType } from '../../propTypes';
 
 const Image = styled.img`
   width: 100px;
@@ -30,15 +30,19 @@ const strikeArtistsFromName = (artists, name) => {
   return nameSegments.join(' ');
 };
 
-const Album = ({
-  album: {
-    name, release_date: date, images, artists,
+const Track = ({
+  track: {
+    name,
+    album: {
+      name: albumName, release_date: date, images, artists,
+    },
   },
   hideCover,
   hideArtists,
+  hideAlbum,
 }) => {
   const year = moment(date).format('YYYY');
-  const albumName = hideArtists ? strikeArtistsFromName(artists, name) : name;
+  const trackName = hideArtists ? strikeArtistsFromName(artists, name) : name;
 
   return (
     <Panel width="650px">
@@ -59,10 +63,20 @@ const Album = ({
             </Table.Cell>
           </Table.Column>
         </If>
+        <If condition={!hideAlbum}>
+          <Table.Column>
+            <Table.Cell>Album</Table.Cell>
+            <Table.Cell>
+              <strong>
+                {albumName}
+              </strong>
+            </Table.Cell>
+          </Table.Column>
+        </If>
         <Table.Column>
           <Table.Cell>Title</Table.Cell>
           <Table.Cell>
-            <strong>{albumName}</strong>
+            <strong>{trackName}</strong>
           </Table.Cell>
         </Table.Column>
         <Table.Column>
@@ -76,15 +90,17 @@ const Album = ({
   );
 };
 
-Album.propTypes = {
-  album: AlbumType.isRequired,
+Track.propTypes = {
+  track: TrackType.isRequired,
   hideCover: PropTypes.bool,
   hideArtists: PropTypes.bool,
+  hideAlbum: PropTypes.bool,
 };
 
-Album.defaultProps = {
+Track.defaultProps = {
   hideCover: false,
   hideArtists: false,
+  hideAlbum: false,
 };
 
-export default waitForData('album')(Album);
+export default waitForData('track')(Track);

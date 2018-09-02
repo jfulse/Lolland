@@ -5,10 +5,12 @@ import { compose, withProps, withState } from 'recompose';
 import styled from 'styled-components';
 
 import {
-  Album, Choose, If, Switch,
+  Album, Choose, If, Switch, Track,
 } from '..';
 import { itemTypes, resultTypes } from '../../constants';
-import { Album as AlbumType, Collection, Game } from '../../propTypes';
+import {
+  Album as AlbumType, Track as TrackType, Collection, Game,
+} from '../../propTypes';
 import { random, noop } from '../../utils';
 
 // TODO: Abstract guess from album to its own component
@@ -71,6 +73,18 @@ const randomAlbum = async (albums, setAlbum) => {
   setAlbum(album);
 };
 
+const randomTrack = async (tracks, setTrack) => {
+  const { total } = await tracks.fetch();
+  const offset = random(total);
+  const baseUrl = tracks.url();
+  const urlWithQuery = `${baseUrl}/?offset=${offset}`;
+  tracks.url = () => urlWithQuery; // eslint-disable-line no-param-reassign
+  await tracks.fetch();
+  tracks.url = () => baseUrl; // eslint-disable-line no-param-reassign
+  const track = tracks.get();
+  setTrack(track);
+};
+
 const initialAnswer = { value: '', result: resultTypes.PENDING };
 
 class GuessArtist extends React.Component {
@@ -79,6 +93,8 @@ class GuessArtist extends React.Component {
 
     this.displayAnswer = this.displayAnswer.bind(this);
     this.newAlbum = this.newAlbum.bind(this);
+    this.newTrack = this.newTrack.bind(this);
+    this.new = this.new.bind(this);
   }
 
   displayAnswer() {
@@ -112,6 +128,37 @@ class GuessArtist extends React.Component {
     setAnswer(initialAnswer);
   }
 
+  async newTrack() {
+    const {
+      tracks,
+      answer: { result },
+      setTrack,
+      setAnswer,
+      game: { showAnswer, setShowAnswer, increaseWrong },
+    } = this.props;
+
+    if (!showAnswer && result === resultTypes.PENDING) {
+      increaseWrong();
+    }
+    setShowAnswer(false);
+    await randomTrack(tracks, setTrack);
+    setAnswer(initialAnswer);
+  }
+
+  async new() {
+    const { game: { current: { from } } } = this.props;
+    switch (from) {
+      case itemTypes.ALBUM:
+        await this.newAlbum();
+        break;
+      case itemTypes.TRACK:
+        await this.newTrack();
+        break;
+      default:
+        break;
+    }
+  }
+
   render() {
     const {
       game: {
@@ -120,6 +167,9 @@ class GuessArtist extends React.Component {
       albums,
       album,
       setAlbum,
+      tracks,
+      track,
+      setTrack,
       answer,
       setAnswer,
       handleSubmit,
@@ -137,12 +187,15 @@ class GuessArtist extends React.Component {
               await randomAlbum(albums, setAlbum);
             }}
             role="link"
-            label="From album"
+            label="Album"
           />
           <Choose.Alternative
-            onClick={() => setCurrent({ from: itemTypes.TRACK })}
+            onClick={async () => {
+              setCurrent({ from: itemTypes.TRACK });
+              await randomTrack(tracks, setTrack);
+            }}
             role="link"
-            label="From track"
+            label="Track"
           />
         </Choose>
       );
@@ -174,7 +227,12 @@ class GuessArtist extends React.Component {
             />
           </Switch.Case>
           <Switch.Case caseName={itemTypes.TRACK}>
-            {itemTypes.TRACK}
+            <Track
+              hideCover={!showAnswer}
+              hideArtists={!showAnswer}
+              hideAlbum={!showAnswer}
+              track={track}
+            />
           </Switch.Case>
         </Switch>
         <ActionsWrapper>
@@ -202,9 +260,9 @@ class GuessArtist extends React.Component {
           </SubmitWrapper>
           <StyledButton
             type="button"
-            onClick={this.newAlbum}
+            onClick={this.new}
           >
-            Next album
+            Next
           </StyledButton>
         </ActionsWrapper>
         <If condition={answer.result === resultTypes.CORRECT}>
@@ -237,6 +295,9 @@ GuessArtist.propTypes = {
   albums: Collection.isRequired,
   album: AlbumType,
   setAlbum: PropTypes.func.isRequired,
+  tracks: Collection.isRequired,
+  track: TrackType,
+  setTrack: PropTypes.func.isRequired,
   answer: PropTypes.shape({
     value: PropTypes.string.isRequired,
     result: PropTypes.oneOf(Object.values(resultTypes)).isRequired,
@@ -247,6 +308,7 @@ GuessArtist.propTypes = {
 
 GuessArtist.defaultProps = {
   album: null,
+  track: null,
   answer: initialAnswer,
 };
 
@@ -256,41 +318,59 @@ const checkAlbumAnswer = (album, { value }) => {
   return false;
 };
 
+const checkTrackAnswer = (track, { value }) => {
+  const artists = track.artists.map(({ name }) => name.toLowerCase());
+  if (artists.includes(value)) return true;
+  return false;
+};
+
 const withHandleSubmit = withProps(({
-  album, answer, game, setAnswer,
+  album, track, answer, game, setAnswer,
 }) => {
-  let handleSubmit;
+  let check;
+  let solution;
   if (game && game.current && game.current.from) {
-    const { increaseCorrect, increaseWrong } = game;
     switch (game.current.from) {
       case itemTypes.ALBUM: {
-        handleSubmit = () => {
-          const isCorrect = checkAlbumAnswer(album, answer);
-          if (isCorrect) {
-            setAnswer({ result: resultTypes.CORRECT, value: '' });
-            increaseCorrect();
-          } else {
-            setAnswer({ result: resultTypes.WRONG, value: '' });
-            increaseWrong();
-          }
-        };
+        check = checkAlbumAnswer;
+        solution = album;
+        break;
+      }
+      case itemTypes.TRACK: {
+        check = checkTrackAnswer;
+        solution = track;
         break;
       }
       default:
-        handleSubmit = noop;
+        break;
     }
-  } else {
-    handleSubmit = noop;
   }
 
-  return { handleSubmit };
+  if (check && solution) {
+    const { increaseCorrect, increaseWrong } = game;
+    const handleSubmit = () => {
+      const isCorrect = check(solution, answer);
+      if (isCorrect) {
+        setAnswer({ result: resultTypes.CORRECT, value: '' });
+        increaseCorrect();
+      } else {
+        setAnswer({ result: resultTypes.WRONG, value: '' });
+        increaseWrong();
+      }
+    };
+    return { handleSubmit };
+  }
+
+  return { handleSubmit: noop };
 });
 
 export default compose(
   inject('game'),
   inject('albums'),
+  inject('tracks'),
   observer,
   withState('album', 'setAlbum', null),
+  withState('track', 'setTrack', null),
   withState('answer', 'setAnswer', initialAnswer),
   withHandleSubmit,
 )(GuessArtist);

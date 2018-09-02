@@ -8,3 +8,6 @@ export { default as Switch } from './Switch';
 export { default as Album } from './Album';
 export { default as Panel } from './Panel';
 export { default as If } from './If';
+export { default as Track } from './Track';
+export { default as Table } from './Table';
+export { default as Background } from './Background';

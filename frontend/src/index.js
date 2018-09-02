@@ -7,7 +7,7 @@ import { Router } from 'react-router-dom';
 
 import App from './App';
 import {
-  albums, auth, game, user,
+  albums, auth, game, tracks, user,
 } from './state';
 
 const documentElement = document.getElementById('ReactApp');
@@ -24,6 +24,7 @@ const stores = {
   auth,
   game,
   route: routingStore,
+  tracks,
   user,
 };
 

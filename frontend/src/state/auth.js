@@ -1,9 +1,13 @@
-import { action, decorate, observable } from 'mobx';
+import {
+  action, decorate, observable, runInAction,
+} from 'mobx';
 
 class Auth {
   constructor() {
-    this.token = null;
-    this.refreshToken = null;
+    runInAction(() => {
+      this.token = null;
+      this.refreshToken = null;
+    });
 
     this.setToken = this.setToken.bind(this);
     this.setRefreshToken = this.setRefreshToken.bind(this);

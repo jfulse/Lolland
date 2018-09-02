@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { configure } from 'mobx';
+import { configure, runInAction } from 'mobx';
 import { apiClient } from 'mobx-rest';
 import createAdapter from 'mobx-rest-axios-adapter';
 import localStorage from 'mobx-localstorage';
@@ -14,10 +14,10 @@ import { Categories, GuessArtist, Header } from './components';
 const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
 const STORAGE_TOKEN = 'lolland-token';
 
-// TOTO: Get from .env
+// TODO: Get from .env
 const SERVER_URL = 'http://localhost:8888';
 
-configure({ enforceActions: 'observed' });
+configure({ enforceActions: 'always' });
 
 const App = () => (
   <div>
@@ -51,7 +51,7 @@ const initialise = lifecycle({
     }
 
     if (token) {
-      localStorage.setItem(STORAGE_TOKEN, token);
+      runInAction(() => localStorage.setItem(STORAGE_TOKEN, token));
       setToken(token);
 
       const axiosAdapter = createAdapter(axios);
@@ -66,7 +66,7 @@ const initialise = lifecycle({
 
       await user.fetch();
 
-      this.forceUpdate();
+      this.forceUpdate(); // FIXME: Auto rerender on user update
     } else {
       console.log('Access token not found; redirecting to login');
       window.location.replace(`${SERVER_URL}/login`);
@@ -75,9 +75,9 @@ const initialise = lifecycle({
 });
 
 export default compose(
-  withRouter,
-  inject('route'),
+  withRouter, // Necessary to rerender on navigation
   inject('auth'),
+  inject('route'),
   inject('user'),
   observer,
   initialise,

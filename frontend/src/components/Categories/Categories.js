@@ -1,30 +1,23 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { compose } from 'recompose';
-import styled from 'styled-components';
 
+import { Choose } from '..';
 import { categoryTypes } from '../../constants';
 import { Game, Route } from '../../propTypes';
 
-const CategoriesWrapper = styled.div`
-  font-size: 12px;
-  text-align: center;
-`;
-
 const Categories = ({ game: { setCategory }, route: { push } }) => (
-  <CategoriesWrapper>
+  <Choose>
     <h2>Choose category:</h2>
-    <button
+    <Choose.Alternative
       onClick={() => {
         setCategory(categoryTypes.GUESS_ARTIST);
         push('/guess-artist');
       }}
-      type="button"
       role="link"
-    >
-      Guess artist
-    </button>
-  </CategoriesWrapper>
+      label="Guess artist"
+    />
+  </Choose>
 );
 
 Categories.propTypes = {

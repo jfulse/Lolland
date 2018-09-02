@@ -23,6 +23,7 @@
     "mobx-react-router": "^4.0.4",
     "mobx-rest": "^2.2.5",
     "mobx-rest-axios-adapter": "^2.1.1",
+    "moment": "^2.22.2",
     "prop-types": "^15.6.2",
     "query-string": "^6.1.0",
     "react": "^16.4.2",

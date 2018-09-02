@@ -1,1 +1,2 @@
-export { default as waitForModels } from './waitForModels'; // eslint-disable-line import/prefer-default-export
+export { default as waitForModels } from './waitForModels';
+export { default as waitForCollections } from './waitForCollections';

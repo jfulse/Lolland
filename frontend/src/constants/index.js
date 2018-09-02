@@ -1,1 +1,2 @@
-export { default as categoryTypes } from './categoryTypes'; // eslint-disable-line import/prefer-default-export
+export { default as categoryTypes } from './categoryTypes';
+export { default as itemTypes } from './itemTypes';

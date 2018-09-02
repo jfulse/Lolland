@@ -324,13 +324,13 @@ GuessArtist.defaultProps = {
 
 const checkAlbumAnswer = (album, { value }) => {
   const artists = album.artists.map(({ name }) => name.toLowerCase());
-  if (artists.includes(value)) return true;
+  if (artists.includes(value.toLowerCase())) return true;
   return false;
 };
 
 const checkTrackAnswer = (track, { value }) => {
   const artists = track.artists.map(({ name }) => name.toLowerCase());
-  if (artists.includes(value)) return true;
+  if (artists.includes(value.toLowerCase())) return true;
   return false;
 };
 

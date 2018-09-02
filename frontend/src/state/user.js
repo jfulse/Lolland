@@ -1,8 +1,7 @@
 import { Model } from 'mobx-rest';
 
 class User extends Model {
-  // eslint-disable-next-line class-methods-use-this
-  url() {
+  url() { // eslint-disable-line class-methods-use-this
     return '/me';
   }
 }

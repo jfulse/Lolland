@@ -1,12 +1,19 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { branch, compose, renderNothing } from 'recompose';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'recompose';
+import styled from 'styled-components';
 
 import { categoryTypes } from '../../constants';
+import { Game, Route } from '../../propTypes';
+
+const CategoriesWrapper = styled.div`
+  font-size: 12px;
+  text-align: center;
+`;
 
 const Categories = ({ game: { setCategory }, route: { push } }) => (
-  <div style={{ fontSize: '12px', textAlign: 'center' }}>
+  <CategoriesWrapper>
     <h2>Choose category:</h2>
     <button
       onClick={() => {
@@ -18,25 +25,16 @@ const Categories = ({ game: { setCategory }, route: { push } }) => (
     >
       Guess artist
     </button>
-  </div>
+  </CategoriesWrapper>
 );
 
 Categories.propTypes = {
-  game: PropTypes.shape({
-    setCategory: PropTypes.func,
-    category: PropTypes.string, // TODO: Enum
-  }).isRequired,
-  route: PropTypes.shape({
-    push: PropTypes.func,
-  }).isRequired,
+  game: Game.isRequired,
+  route: Route.isRequired,
 };
 
 export default compose(
   inject('game'),
   inject('route'),
   observer,
-  branch(
-    ({ game: { category } }) => category,
-    renderNothing,
-  ),
 )(Categories);

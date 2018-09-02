@@ -1,27 +1,31 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { compose } from 'recompose';
+import styled from 'styled-components';
 
-import { waitForUserProfile } from '../../enhancers';
+import { waitForModels } from '../../enhancers';
+import { Model } from '../../propTypes';
+
+const HeaderWrapper = styled.div`
+  font-size: 13px;
+  text-align: center;
+  border: 1px solid black;
+`;
 
 const Header = ({ user }) => (
-  <div style={{
-    fontSize: '13px', textAlign: 'center', margin: '10px 0 40px', border: '1px solid black',
-  }}
-  >
+  <HeaderWrapper>
     <h1>
       {user.get('id')}
     </h1>
-  </div>
+  </HeaderWrapper>
 );
 
 Header.propTypes = {
-  user: PropTypes.shape({}).isRequired,
+  user: Model.isRequired,
 };
 
 export default compose(
   inject('user'),
   observer,
-  waitForUserProfile,
+  waitForModels('user.id'),
 )(Header);

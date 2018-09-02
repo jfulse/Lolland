@@ -1,1 +1,1 @@
-export { default as waitForUserProfile } from './waitForUserProfile'; // eslint-disable-line import/prefer-default-export
+export { default as waitForModels } from './waitForModels'; // eslint-disable-line import/prefer-default-export

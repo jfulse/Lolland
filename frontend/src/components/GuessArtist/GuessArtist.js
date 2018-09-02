@@ -13,6 +13,10 @@ import { random, noop } from '../../utils';
 
 // TODO: Abstract guess from album to its own component
 
+const Wrapper = styled.div`
+  padding: 50px;
+`;
+
 const Question = styled.h3`
   display: flex;
   justify-content: space-between;
@@ -121,6 +125,7 @@ class GuessArtist extends React.Component {
       handleSubmit,
     } = this.props;
     const inputDisabled = showAnswer || answer.result !== resultTypes.PENDING;
+    const submitDisabled = inputDisabled || !answer.value;
 
     if (!current) {
       return (
@@ -144,7 +149,7 @@ class GuessArtist extends React.Component {
     }
 
     return (
-      <div>
+      <Wrapper>
         <br />
         <Question>
           <span>
@@ -190,7 +195,7 @@ class GuessArtist extends React.Component {
             <StyledButton
               type="button"
               onClick={handleSubmit}
-              disabled={inputDisabled}
+              disabled={submitDisabled}
             >
               Check answer
             </StyledButton>
@@ -199,7 +204,7 @@ class GuessArtist extends React.Component {
             type="button"
             onClick={this.newAlbum}
           >
-            New album
+            Next album
           </StyledButton>
         </ActionsWrapper>
         <If condition={answer.result === resultTypes.CORRECT}>
@@ -214,9 +219,15 @@ class GuessArtist extends React.Component {
             Wrong...
             &nbsp;
             <span role="img" aria-label="wrong">🤢 🤮</span>
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <StyledButton onClick={this.displayAnswer} type="button">
+              Show answer
+            </StyledButton>
           </AnnouncementWrapper>
         </If>
-      </div>
+      </Wrapper>
     );
   }
 }
@@ -282,5 +293,4 @@ export default compose(
   withState('album', 'setAlbum', null),
   withState('answer', 'setAnswer', initialAnswer),
   withHandleSubmit,
-  withProps(props => console.log('props', props) || {}),
 )(GuessArtist);

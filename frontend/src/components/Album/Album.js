@@ -48,6 +48,22 @@ const Image = styled.img`
   border: 1px solid black;
 `;
 
+const strikeArtistsFromName = (artists, name) => {
+  const nameSegments = name.split(' ');
+  artists.forEach(({ name: artistName }) => {
+    const artistNameSegments = artistName.split(' ');
+    artistNameSegments.forEach((artistNameSegment) => {
+      const stars = '*'.repeat(artistNameSegment.length);
+      const idx = nameSegments.findIndex(
+        nameSegment => nameSegment.toLowerCase() === artistNameSegment.toLowerCase(),
+      );
+      if (idx > -1) nameSegments.splice(idx, 1, stars);
+    });
+  });
+
+  return nameSegments.join(' ');
+};
+
 const Album = ({
   album: {
     name, release_date: date, images, artists,
@@ -56,8 +72,10 @@ const Album = ({
   hideArtists,
 }) => {
   const year = moment(date).format('YYYY');
+  const albumName = hideArtists ? strikeArtistsFromName(artists, name) : name;
+
   return (
-    <Panel>
+    <Panel width="650px">
       <Wrapper>
         <Background image={images[0].url} />
         <If condition={!hideCover}>
@@ -78,7 +96,7 @@ const Album = ({
         <Column>
           <Cell>Title</Cell>
           <Cell>
-            <strong>{name}</strong>
+            <strong>{albumName}</strong>
           </Cell>
         </Column>
         <Column>

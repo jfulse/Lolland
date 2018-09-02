@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { Children } from '../../propTypes';
@@ -9,14 +10,14 @@ const Wrapper = styled.div`
 `;
 
 const StyledPanel = styled.div`
-  width: 90%;
-  min-width: 500px;
+  width: ${({ width }) => width};
+  min-width: ${({ minWidth }) => minWidth};
   border: 1px solid black;
 `;
 
-const Panel = ({ children }) => (
+const Panel = ({ children, width, minWidth }) => (
   <Wrapper>
-    <StyledPanel>
+    <StyledPanel width={width} minWidth={minWidth}>
       {children}
     </StyledPanel>
   </Wrapper>
@@ -24,6 +25,13 @@ const Panel = ({ children }) => (
 
 Panel.propTypes = {
   children: Children.isRequired,
+  width: PropTypes.string,
+  minWidth: PropTypes.string,
+};
+
+Panel.defaultProps = {
+  width: '90%',
+  minWidth: '0',
 };
 
 export default Panel;

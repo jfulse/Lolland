@@ -5,3 +5,4 @@ export { default as Model } from './Model';
 export { default as Route } from './Route';
 export { default as Album } from './Album';
 export { default as Track } from './Track';
+export { default as Player } from './Player';

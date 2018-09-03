@@ -5,4 +5,5 @@ export default PropTypes.shape({
   release_date: PropTypes.string.isRequired,
   images: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   artists: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  uri: PropTypes.string.isRequired,
 });

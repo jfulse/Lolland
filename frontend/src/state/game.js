@@ -53,4 +53,4 @@ decorate(Game, {
   increaseWrong: action,
 });
 
-export default new Game();
+export default Game;

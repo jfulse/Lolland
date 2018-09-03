@@ -10,6 +10,7 @@ const Wrapper = styled.div`
   justify-content: space-around;
   position: relative;
   min-height: 150px;
+  flex-grow: 1;
 `;
 
 const Column = styled.div`

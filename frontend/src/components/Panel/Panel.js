@@ -13,6 +13,8 @@ const StyledPanel = styled.div`
   width: ${({ width }) => width};
   min-width: ${({ minWidth }) => minWidth};
   border: 1px solid black;
+  display: flex;
+  border-radius: 5px;
 `;
 
 const Panel = ({ children, width, minWidth }) => (

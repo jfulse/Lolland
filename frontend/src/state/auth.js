@@ -28,4 +28,4 @@ decorate(Auth, {
   setRefreshToken: action,
 });
 
-export default new Auth();
+export default Auth;

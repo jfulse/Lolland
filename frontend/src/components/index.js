@@ -11,3 +11,4 @@ export { default as If } from './If';
 export { default as Track } from './Track';
 export { default as Table } from './Table';
 export { default as Background } from './Background';
+export { default as Player } from './Player';

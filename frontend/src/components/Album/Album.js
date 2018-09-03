@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import {
-  Background, If, Panel, Table,
+  Background, If, Panel, Player, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
 import { Album as AlbumType } from '../../propTypes';
@@ -17,7 +17,7 @@ const Image = styled.img`
 
 const Album = ({
   album: {
-    name, release_date: date, images, artists,
+    name, release_date: date, images, artists, uri,
   },
   hideCover,
   hideArtists,
@@ -26,7 +26,8 @@ const Album = ({
   const albumName = hideArtists ? strikeArtistsFromName(artists, name) : name;
 
   return (
-    <Panel width="650px">
+    <Panel width="800px">
+      <Player uri={uri} />
       <Table>
         <Background image={images[0].url} />
         <If condition={!hideCover}>

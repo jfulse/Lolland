@@ -10,8 +10,8 @@ import { compose, lifecycle } from 'recompose';
 import queryString from 'query-string';
 
 import { Categories, GuessArtist, Header } from './components';
+import initPlayer from './initPlayer';
 
-const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
 const STORAGE_TOKEN = 'lolland-token';
 const STORAGE_REFRESH_TOKEN = 'lolland-refresh-token';
 
@@ -36,6 +36,8 @@ const initialise = lifecycle({
       auth: { setToken, setRefreshToken, refreshToken },
       route: { location: { hash }, push },
       user,
+      spotifyUrl,
+      player: { setDeviceId },
     } = this.props;
     const {
       access_token: hashToken,
@@ -52,13 +54,14 @@ const initialise = lifecycle({
     }
 
     if (token) {
+      initPlayer(token, spotifyUrl, setDeviceId);
       runInAction(() => localStorage.setItem(STORAGE_TOKEN, token));
       runInAction(() => localStorage.setItem(STORAGE_REFRESH_TOKEN, hashRefreshToken));
       setToken(token);
 
       const axiosAdapter = createAdapter(axios);
       apiClient(axiosAdapter, {
-        apiPath: SPOTIFY_API_URL,
+        apiPath: spotifyUrl,
         commonOptions: {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -100,6 +103,7 @@ export default compose(
   inject('auth'),
   inject('route'),
   inject('user'),
+  inject('player'),
   observer,
   initialise,
 )(App);

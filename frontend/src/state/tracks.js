@@ -50,4 +50,4 @@ decorate(Tracks, {
   setTotal: action,
 });
 
-export default new Tracks();
+export default Tracks;

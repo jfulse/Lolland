@@ -50,4 +50,4 @@ decorate(Albums, {
   setTotal: action,
 });
 
-export default new Albums();
+export default Albums;

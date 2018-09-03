@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import {
-  Background, If, Panel, Table,
+  Background, If, Panel, Player, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
 import { Track as TrackType } from '../../propTypes';
@@ -30,7 +30,8 @@ const Track = ({
   const trackName = hideArtists ? strikeArtistsFromName(artists, name) : name;
 
   return (
-    <Panel width="650px">
+    <Panel width="800px">
+      <Player />
       <Table>
         <Background image={images[0].url} />
         <If condition={!hideCover}>

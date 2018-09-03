@@ -16,6 +16,7 @@ class Player {
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
     this.setContextUri = this.setContextUri.bind(this);
+    this.setUri = this.setUri.bind(this);
   }
 
   setDeviceId(deviceId) {
@@ -70,6 +71,23 @@ class Player {
       console.error(err);
     }
   }
+
+  async setUri(uri) {
+    const { token } = this.auth;
+    this.playing = true;
+
+    try {
+      await axios({
+        url: `${this.spotifyUrl}/me/player/play`,
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` },
+        query: { device_id: this.deviceId },
+        data: { uris: [uri] },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
 }
 
 decorate(Player, {
@@ -78,6 +96,7 @@ decorate(Player, {
   start: action,
   stop: action,
   setContextUri: action,
+  setUri: action,
 });
 
 export default Player;

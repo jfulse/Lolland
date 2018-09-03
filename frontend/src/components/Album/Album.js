@@ -27,7 +27,7 @@ const Album = ({
 
   return (
     <Panel width="800px">
-      <Player uri={uri} />
+      <Player uri={uri} hasContext />
       <Table>
         <Background image={images[0].url} />
         <If condition={!hideCover}>

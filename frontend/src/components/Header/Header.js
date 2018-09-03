@@ -41,6 +41,6 @@ Header.propTypes = {
 
 export default compose(
   inject('user'),
-  observer,
   waitForModels('user.id'),
+  observer,
 )(Header);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { compose, lifecycle, withProps } from 'recompose';
+import { compose, lifecycle } from 'recompose';
 import styled from 'styled-components';
 
 import { If } from '..';
@@ -8,14 +8,15 @@ import { Player as PlayerType } from '../../propTypes';
 
 const StyledDiv = styled.div`
   width: 150px;
+  min-width: 150px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-right: 1px solid lightgray;
-  background-image: radial-gradient(#ff5714, #37bb53, #009aff);
+  background-image: radial-gradient(white, black);
 
   svg {
-    fill: #353535;
+    fill: #252525;
   }
 
   &:hover {
@@ -23,7 +24,7 @@ const StyledDiv = styled.div`
     filter: brightness(90%);
 
     svg {
-      fill: #753838;
+      fill: #565656;
     }
   }
 `;
@@ -50,8 +51,17 @@ Player.propTypes = {
 
 const withContextUri = lifecycle({
   async componentDidMount() {
-    const { player: { setContextUri }, uri } = this.props;
-    await setContextUri(uri);
+    const { player: { setContextUri, setUri }, hasContext, uri } = this.props;
+    if (hasContext) await setContextUri(uri);
+    else await setUri(uri);
+  },
+  async componentWillReceiveProps({ uri: nextUri }) {
+    const { uri, player: { setUri, setContextUri }, hasContext } = this.props;
+    if (hasContext && uri !== nextUri) {
+      await setContextUri(nextUri);
+    } else if (!hasContext && uri !== nextUri) {
+      await setUri(nextUri);
+    }
   },
 });
 
@@ -59,5 +69,4 @@ export default compose(
   inject('player'),
   withContextUri,
   observer,
-  withProps(props => console.log('🍾 props', props) || {}),
 )(Player);

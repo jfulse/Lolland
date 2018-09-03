@@ -18,6 +18,7 @@ const Image = styled.img`
 const Track = ({
   track: {
     name,
+    uri,
     album: {
       name: albumName, release_date: date, images, artists,
     },
@@ -31,7 +32,7 @@ const Track = ({
 
   return (
     <Panel width="800px">
-      <Player />
+      <Player uri={uri} />
       <Table>
         <Background image={images[0].url} />
         <If condition={!hideCover}>

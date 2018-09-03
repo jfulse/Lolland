@@ -101,24 +101,9 @@ class GuessArtist extends React.Component {
   constructor(props) {
     super(props);
 
-    this.displayAnswer = this.displayAnswer.bind(this);
     this.newAlbum = this.newAlbum.bind(this);
     this.newTrack = this.newTrack.bind(this);
     this.new = this.new.bind(this);
-  }
-
-  displayAnswer() {
-    const {
-      setAnswer,
-      answer: { result },
-      game: { setShowAnswer, increaseWrong },
-    } = this.props;
-
-    if (result === resultTypes.PENDING) {
-      increaseWrong();
-    }
-    setShowAnswer(true);
-    setAnswer(initialAnswer);
   }
 
   async newAlbum() {
@@ -183,6 +168,7 @@ class GuessArtist extends React.Component {
       answer,
       setAnswer,
       handleSubmit,
+      displayAnswer,
     } = this.props;
     const inputDisabled = showAnswer || answer.result !== resultTypes.PENDING;
     const submitDisabled = inputDisabled || !answer.value;
@@ -248,7 +234,7 @@ class GuessArtist extends React.Component {
         <ActionsWrapper>
           <StyledButton
             type="button"
-            onClick={this.displayAnswer}
+            onClick={displayAnswer}
             disabled={showAnswer}
           >
             Show answer
@@ -287,12 +273,6 @@ class GuessArtist extends React.Component {
             Wrong...
             &nbsp;
             <span role="img" aria-label="wrong">🤢 🤮</span>
-            &nbsp;
-            &nbsp;
-            &nbsp;
-            <StyledButton onClick={this.displayAnswer} type="button">
-              Show answer
-            </StyledButton>
           </AnnouncementWrapper>
         </If>
       </Wrapper>
@@ -314,6 +294,7 @@ GuessArtist.propTypes = {
   }),
   setAnswer: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  displayAnswer: PropTypes.func.isRequired,
 };
 
 GuessArtist.defaultProps = {
@@ -321,6 +302,18 @@ GuessArtist.defaultProps = {
   track: null,
   answer: initialAnswer,
 };
+
+const withDisplayAnswer = withProps(({
+  answer: { result },
+  game: { setShowAnswer, increaseWrong },
+}) => ({
+  displayAnswer: ({ doNotCount }) => {
+    if (result === resultTypes.PENDING && !doNotCount) {
+      increaseWrong();
+    }
+    setShowAnswer(true);
+  },
+}));
 
 const checkAlbumAnswer = (album, { value }) => {
   const artists = album.artists.map(({ name }) => name.toLowerCase());
@@ -335,7 +328,7 @@ const checkTrackAnswer = (track, { value }) => {
 };
 
 const withHandleSubmit = withProps(({
-  album, track, answer, game, setAnswer,
+  album, track, answer, game, setAnswer, displayAnswer,
 }) => {
   let check;
   let solution;
@@ -367,6 +360,7 @@ const withHandleSubmit = withProps(({
         setAnswer({ result: resultTypes.WRONG, value: '' });
         increaseWrong();
       }
+      displayAnswer({ doNotCount: true });
     };
     return { handleSubmit };
   }
@@ -378,9 +372,10 @@ export default compose(
   inject('game'),
   inject('albums'),
   inject('tracks'),
-  observer,
   withState('album', 'setAlbum', null),
   withState('track', 'setTrack', null),
   withState('answer', 'setAnswer', initialAnswer),
+  withDisplayAnswer,
   withHandleSubmit,
+  observer,
 )(GuessArtist);

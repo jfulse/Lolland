@@ -9,7 +9,7 @@ import axios from 'axios';
 import { compose, lifecycle } from 'recompose';
 import queryString from 'query-string';
 
-import { Categories, GuessArtist, Header } from './components';
+import { Header, SetupGame } from './components';
 import initPlayer from './initPlayer';
 
 const STORAGE_TOKEN = 'lolland-token';
@@ -24,8 +24,8 @@ const App = () => (
   <div>
     <Header />
     <Switch>
-      <Route exact path="/" component={Categories} />
-      <Route path="/guess-artist" component={GuessArtist} />
+      <Route exact path="/" component={SetupGame} />
+      {/* <Route path="/guess-artist" component={GuessArtist} /> */}
     </Switch>
   </div>
 );

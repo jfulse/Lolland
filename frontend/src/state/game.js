@@ -1,56 +1,56 @@
 import {
   action, decorate, observable, runInAction,
 } from 'mobx';
+import { categoryTypes, resultTypes } from '../constants';
+
+const defaultGameState = {
+  category: categoryTypes.QUIZ,
+  type: { from: null, to: null },
+  correctAnswers: 0,
+  wrongAnswers: 0,
+  state: {
+    solution: null,
+    answer: null,
+    result: resultTypes.PENDING,
+  },
+  history: [],
+};
 
 class Game {
   constructor() {
     runInAction(() => {
-      this.category = null;
-      this.current = null;
-      this.showAnswer = false;
-      this.nCorrect = 0;
-      this.nWrong = 0;
+      this.currentGame = defaultGameState;
+      this.pastGames = [];
     });
 
     this.setCategory = this.setCategory.bind(this);
-    this.setCurrent = this.setCurrent.bind(this);
-    this.setShowAnswer = this.setShowAnswer.bind(this);
-    this.increaseCorrect = this.increaseCorrect.bind(this);
-    this.increaseWrong = this.increaseWrong.bind(this);
+    this.setTypeFrom = this.setTypeFrom.bind(this);
+    this.setTypeTo = this.setTypeTo.bind(this);
   }
 
   setCategory(category) {
-    this.category = category;
+    this.currentGame.category = category;
   }
 
-  setCurrent(current) {
-    this.current = current;
+  setTypeFrom(from) {
+    console.log('setTypeFrom', from);
+    this.currentGame.type.from = from;
+    console.log('this.currentGame', this.currentGame);
   }
 
-  setShowAnswer(showAnswer) {
-    this.showAnswer = showAnswer;
-  }
-
-  increaseCorrect() {
-    this.nCorrect += 1;
-  }
-
-  increaseWrong() {
-    this.nWrong += 1;
+  setTypeTo(to) {
+    console.log('setTypeTo', to);
+    this.currentGame.type.to = to;
+    console.log('this.currentGame', this.currentGame);
   }
 }
 
 decorate(Game, {
-  category: observable,
-  current: observable,
-  showAnswer: observable,
-  nCorrect: observable,
-  nWrong: observable,
+  currentGame: observable,
+  pastGames: observable,
   setCategory: action,
-  setCurrent: action,
-  setShowAnswer: action,
-  increaseCorrect: action,
-  increaseWrong: action,
+  setTypeFrom: action,
+  setTypeTo: action,
 });
 
 export default Game;

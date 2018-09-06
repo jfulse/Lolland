@@ -13,7 +13,7 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-const SubmitField = styled.div`
+const SubmitForm = styled.form`
   display: flex;
   align-items: center;
 
@@ -45,12 +45,24 @@ const Submit = ({
     <StyledButton type="button" onClick={reveal} disabled={showAnswer}>
       Show answer
     </StyledButton>
-    <SubmitField>
-      <input value={guess} onChange={e => setGuess(e.target.value)} disabled={showAnswer} />
-      <StyledButton type="button" onClick={() => submitGuess(guess)} disabled={showAnswer}>
+    <SubmitForm>
+      <input
+        value={guess}
+        onChange={e => setGuess(e.target.value)}
+        disabled={showAnswer}
+        autoFocus // eslint-disable-line jsx-a11y/no-autofocus
+      />
+      <StyledButton
+        type="submit"
+        disabled={showAnswer}
+        onClick={() => {
+          submitGuess(guess);
+          setGuess('');
+        }}
+      >
         Check answer
       </StyledButton>
-    </SubmitField>
+    </SubmitForm>
     <StyledButton type="button" onClick={next}>
       Next
     </StyledButton>

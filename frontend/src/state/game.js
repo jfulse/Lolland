@@ -22,6 +22,8 @@ const randomItem = async (collection) => {
   return item;
 };
 
+const formatAnswer = string => string.toLowerCase().replace(/^ ?the/, '').trim();
+
 const defaultState = {
   solutions: [],
   answer: null,
@@ -71,7 +73,7 @@ class Game {
       const album = await randomItem(this.albums);
       if (to === itemTypes.ARTIST) {
         runInAction(() => {
-          this.currentGame.state.solutions = album.artists.map(({ name }) => name.toLowerCase());
+          this.currentGame.state.solutions = album.artists.map(({ name }) => formatAnswer(name));
           this.currentGame.state.fromItem = album;
         });
       } else {
@@ -82,7 +84,7 @@ class Game {
       const track = await randomItem(this.tracks);
       if (to === itemTypes.ARTIST) {
         runInAction(() => {
-          this.currentGame.state.solutions = track.artists.map(({ name }) => name.toLowerCase());
+          this.currentGame.state.solutions = track.artists.map(({ name }) => formatAnswer(name));
           this.currentGame.state.fromItem = track;
         });
       } else {
@@ -96,7 +98,7 @@ class Game {
     const { state } = currentGame;
     state.answer = answer;
 
-    const correct = state.solutions.includes(answer.toLowerCase());
+    const correct = state.solutions.includes(formatAnswer(answer));
     if (correct) {
       state.result = resultTypes.CORRECT;
       state.showAnswer = true;

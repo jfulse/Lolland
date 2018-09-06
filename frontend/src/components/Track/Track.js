@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import {
-  Background, If, Panel, Player, Table,
+  Background, If, Label, Panel, Player, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
 import { Track as TrackType } from '../../propTypes';
@@ -73,6 +73,9 @@ const Track = ({
           </Table.Cell>
         </Table.Column>
       </Table>
+      <Label>
+        TRACK
+      </Label>
     </Panel>
   );
 };

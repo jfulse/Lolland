@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import {
-  Background, If, Panel, Player, Table,
+  Background, If, Label, Panel, Player, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
 import { Album as AlbumType } from '../../propTypes';
@@ -58,6 +58,9 @@ const Album = ({
           </Table.Cell>
         </Table.Column>
       </Table>
+      <Label>
+        ALBUM
+      </Label>
     </Panel>
   );
 };

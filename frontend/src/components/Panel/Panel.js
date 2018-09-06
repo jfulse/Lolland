@@ -15,6 +15,7 @@ const StyledPanel = styled.div`
   border: 1px solid black;
   display: flex;
   border-radius: 5px;
+  position: relative;
 `;
 
 const Panel = ({ children, width, minWidth }) => (

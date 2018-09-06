@@ -8,7 +8,6 @@ import {
 } from '../../components';
 import { Game, Route } from '../../propTypes';
 import { itemTypes } from '../../constants';
-import { printProps } from '../../utils';
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -118,5 +117,4 @@ export default compose(
   inject('game'),
   inject('route'),
   observer,
-  printProps,
 )(Quiz);

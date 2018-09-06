@@ -73,4 +73,4 @@ Album.defaultProps = {
   hideArtists: false,
 };
 
-export default waitForData('album')(Album);
+export default waitForData('album.name')(Album);

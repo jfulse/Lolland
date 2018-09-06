@@ -22,10 +22,10 @@ const browserHistory = createBrowserHistory();
 
 const auth = new Auth();
 const albums = new Albums();
-const game = new Game();
 const player = new Player(auth, SPOTIFY_API_URL);
 const route = new RouterStore();
 const tracks = new Tracks();
+const game = new Game(albums, tracks);
 const user = new User();
 
 const stores = {

@@ -90,4 +90,4 @@ Track.defaultProps = {
   hideAlbum: false,
 };
 
-export default waitForData('track')(Track);
+export default waitForData('track.name')(Track);

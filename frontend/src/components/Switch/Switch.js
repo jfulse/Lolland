@@ -30,7 +30,11 @@ const Switch = ({ children, equals }) => (
 
 Switch.propTypes = {
   children: Children.isRequired,
-  equals: PropTypes.string.isRequired,
+  equals: PropTypes.string,
+};
+
+Switch.defaultProps = {
+  equals: null,
 };
 
 export default setStatic('Case', Case)(Switch);

@@ -12,4 +12,5 @@ export { default as Track } from './Track';
 export { default as Table } from './Table';
 export { default as Background } from './Background';
 export { default as Player } from './Player';
-export { default as SetupGame } from './SetupGame';
+export { default as Submit } from './Submit';
+export { default as Result } from './Result';

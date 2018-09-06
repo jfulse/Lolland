@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { categoryTypes, itemTypes, resultTypes } from '../constants';
 
 const GameState = PropTypes.shape({
-  solution: PropTypes.shape({}),
-  answer: PropTypes.shape({}),
+  solutions: PropTypes.arrayOf(PropTypes.string),
+  answer: PropTypes.string,
   result: PropTypes.oneOf(Object.keys(resultTypes)).isRequired,
+  fromItem: PropTypes.shape({}).isRequired,
+  showAnswer: PropTypes.bool.isRequired,
 });
 
 const CurrentGame = PropTypes.shape({
@@ -22,7 +24,11 @@ const CurrentGame = PropTypes.shape({
 
 export default PropTypes.shape({
   currentGame: CurrentGame.isRequired,
-  pastGames: PropTypes.arrayOf(GameState).isRequired,
+  pastGames: PropTypes.arrayOf(CurrentGame).isRequired,
   setTypeFrom: PropTypes.func.isRequired,
   setTypeTo: PropTypes.func.isRequired,
+  getRandomFrom: PropTypes.func.isRequired,
+  submitGuess: PropTypes.func.isRequired,
+  reveal: PropTypes.func.isRequired,
+  next: PropTypes.func.isRequired,
 });

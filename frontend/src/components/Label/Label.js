@@ -7,4 +7,5 @@ export default styled.div`
   letter-spacing: 2px;
   padding: 3px;
   text-shadow: 0 0 10px white;
+  z-index: 1;
 `;

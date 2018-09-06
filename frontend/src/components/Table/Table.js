@@ -18,9 +18,9 @@ const Column = styled.div`
   flex-direction: column;
   justify-content: center;
   text-shadow: 0 0 10px black;
-  color: #fdfdfd;
   z-index: 2;
   padding: 10px;
+  color: ${({ emphasized }) => (emphasized ? '#85f9a5' : '#fdfdfd')}
 `;
 
 const Cell = styled.div`

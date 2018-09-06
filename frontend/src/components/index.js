@@ -3,6 +3,7 @@ export { default as Loader } from './Loader';
 export { default as Header } from './Header';
 export { default as Choose } from './Choose';
 export { default as Switch } from './Switch';
+export { default as Heart } from './Heart';
 export { default as Album } from './Album';
 export { default as Panel } from './Panel';
 export { default as If } from './If';

@@ -16,9 +16,9 @@ const StyledHeader = styled.h1`
   align-items: center;
   padding: 20px;
 
-  a:last-of-type {
-    visibility: hidden;
-  }
+  // a:last-of-type {
+  //   visibility: hidden;
+  // }
 `;
 
 const StyledLink = styled(Link)`
@@ -26,12 +26,13 @@ const StyledLink = styled(Link)`
 `;
 
 const HomeButton = () => <StyledLink to="/">Home</StyledLink>;
+const FavouritesButton = () => <StyledLink to="/favourites">Favourites</StyledLink>;
 
 const Header = ({ user }) => (
   <StyledHeader>
     <HomeButton />
     {user.get('id')}
-    <HomeButton />
+    <FavouritesButton />
   </StyledHeader>
 );
 

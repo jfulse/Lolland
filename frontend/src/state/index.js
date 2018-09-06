@@ -1,5 +1,6 @@
 export { default as Albums } from './Albums';
 export { default as Auth } from './Auth';
+export { default as Favourites } from './Favourites';
 export { default as Game } from './Game';
 export { default as Player } from './Player';
 export { default as Tracks } from './Tracks';

@@ -88,6 +88,7 @@ class Quiz extends React.Component {
               album={fromItem}
               hideArtists={!showAnswer}
               hideCover={!showAnswer}
+              emphasize={showAnswer && to}
             />
           </Switch.Case>
           <Switch.Case caseName={itemTypes.TRACK}>
@@ -96,10 +97,10 @@ class Quiz extends React.Component {
               hideArtists={!showAnswer}
               hideAlbum={!showAnswer}
               hideCover={!showAnswer}
+              emphasize={showAnswer && to}
             />
           </Switch.Case>
         </Switch>
-        <br />
         <br />
         <Submit />
         <Result />

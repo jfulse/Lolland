@@ -22,7 +22,7 @@ const randomItem = async (collection) => {
   return item;
 };
 
-const formatAnswer = string => string.toLowerCase().replace(/^ ?the/, '').trim();
+const formatAnswer = string => string.toLowerCase().replace(/^ ?the/, '').replace(/['!?´`" ]/, '');
 
 const defaultState = {
   solutions: [],
@@ -87,6 +87,12 @@ class Game {
           this.currentGame.state.solutions = track.artists.map(({ name }) => formatAnswer(name));
           this.currentGame.state.fromItem = track;
         });
+      } else if (to === itemTypes.ALBUM) {
+        runInAction(() => {
+          this.currentGame.state.solutions = [track.album.name];
+          this.currentGame.state.fromItem = track;
+        });
+        console.log('track', track);
       } else {
         console.error('Game: guessing ', to, 'from track not implemented');
       }

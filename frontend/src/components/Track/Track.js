@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
+import { compose } from 'recompose';
 import styled from 'styled-components';
 import moment from 'moment';
 
 import {
-  Background, If, Label, Panel, Player, Table,
+  Background, Heart, If, Label, Panel, Player, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
-import { Track as TrackType } from '../../propTypes';
+import { itemTypes } from '../../constants';
+import { Favourites, Track as TrackType } from '../../propTypes';
 import { strikeArtistsFromName } from '../../utils';
 
 const Image = styled.img`
@@ -16,22 +19,34 @@ const Image = styled.img`
 `;
 
 const Track = ({
-  track: {
+  track,
+  favourites: {
+    isFavourite,
+    setFavourite,
+    unSetFavourite,
+  },
+  hideCover,
+  hideArtists,
+  hideAlbum,
+  emphasize,
+}) => {
+  const {
     name,
     uri,
     album: {
       name: albumName, release_date: date, images, artists,
     },
-  },
-  hideCover,
-  hideArtists,
-  hideAlbum,
-}) => {
+  } = track;
   const year = moment(date).format('YYYY');
   const trackName = hideArtists ? strikeArtistsFromName(artists, name) : name;
+  const trackIsFavourite = isFavourite(itemTypes.TRACK, track);
+  const onHeartClick = () => (trackIsFavourite
+    ? unSetFavourite(itemTypes.TRACK, track)
+    : setFavourite(itemTypes.TRACK, track));
 
   return (
     <Panel width="800px">
+      <Heart outline={!trackIsFavourite} onClick={onHeartClick} />
       <Player uri={uri} />
       <Table>
         <Background image={images[0].url} />
@@ -41,7 +56,7 @@ const Track = ({
           </Table.Column>
         </If>
         <If condition={!hideArtists}>
-          <Table.Column>
+          <Table.Column emphasized={emphasize === itemTypes.ARTIST}>
             <Table.Cell>{`Artist${artists.length > 1 ? 's' : ''}`}</Table.Cell>
             <Table.Cell>
               <strong>
@@ -51,7 +66,7 @@ const Track = ({
           </Table.Column>
         </If>
         <If condition={!hideAlbum}>
-          <Table.Column>
+          <Table.Column emphasized={emphasize === itemTypes.ALBUM}>
             <Table.Cell>Album</Table.Cell>
             <Table.Cell>
               <strong>
@@ -85,12 +100,22 @@ Track.propTypes = {
   hideCover: PropTypes.bool,
   hideArtists: PropTypes.bool,
   hideAlbum: PropTypes.bool,
+  emphasize: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.oneOf(Object.keys(itemTypes)),
+  ]),
+  favourites: Favourites.isRequired,
 };
 
 Track.defaultProps = {
   hideCover: false,
   hideArtists: false,
   hideAlbum: false,
+  emphasize: false,
 };
 
-export default waitForData('track.name')(Track);
+export default compose(
+  inject('favourites'),
+  waitForData('track.name'),
+  observer,
+)(Track);

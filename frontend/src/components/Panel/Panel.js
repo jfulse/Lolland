@@ -7,6 +7,7 @@ import { Children } from '../../propTypes';
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
+  margin-bottom: 20px;
 `;
 
 const StyledPanel = styled.div`

@@ -9,7 +9,7 @@ import axios from 'axios';
 import { compose, lifecycle } from 'recompose';
 import queryString from 'query-string';
 
-import { Quiz, SetupGame } from './routes';
+import { FavouritePage, Quiz, SetupGame } from './routes';
 import { Header } from './components';
 import initPlayer from './initPlayer';
 
@@ -27,6 +27,7 @@ const App = () => (
     <Switch>
       <Route exact path="/" component={SetupGame} />
       <Route path="/quiz" component={Quiz} />
+      <Route path="/favourites" component={FavouritePage} />
     </Switch>
   </div>
 );
@@ -39,6 +40,7 @@ const initialise = lifecycle({
       user,
       spotifyUrl,
       player: { setDeviceId },
+      favourites: { populateFromStore },
     } = this.props;
     const {
       access_token: hashToken,
@@ -91,6 +93,8 @@ const initialise = lifecycle({
         }
       }
 
+      populateFromStore();
+
       this.forceUpdate(); // FIXME: Auto rerender on user update
     } else {
       console.log('Access token not found; redirecting to login');
@@ -105,6 +109,7 @@ export default compose(
   inject('route'),
   inject('user'),
   inject('player'),
+  inject('favourites'),
   observer,
   initialise,
 )(App);

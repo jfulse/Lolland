@@ -17,13 +17,17 @@ const ResultBox = styled.div`
   border-radius: 5px;
   padding: 20px 60px;
   margin-top: 30px;
+  text-align: center;
 `;
 
-const Result = ({ game: { currentGame: { state: { result } } } }) => (
+const Result = ({ game: { currentGame: { state: { answer, result } } } }) => (
   <ResultWrapper>
     <Switch equals={result}>
       <Switch.Case caseName={resultTypes.CORRECT}>
         <ResultBox>
+          <i>{answer}</i>
+          <br />
+          <br />
           Correct!
           {'  '}
           <span role="img" aria-label="correct">🎉🍾</span>
@@ -31,6 +35,9 @@ const Result = ({ game: { currentGame: { state: { result } } } }) => (
       </Switch.Case>
       <Switch.Case caseName={resultTypes.WRONG}>
         <ResultBox>
+          <i>{answer}</i>
+          <br />
+          <br />
           Wrong..
           {'  '}
           <span role="img" aria-label="wrong">🤢🤮</span>

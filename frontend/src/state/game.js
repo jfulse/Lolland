@@ -89,10 +89,9 @@ class Game {
         });
       } else if (to === itemTypes.ALBUM) {
         runInAction(() => {
-          this.currentGame.state.solutions = [track.album.name];
+          this.currentGame.state.solutions = [formatAnswer(track.album.name)];
           this.currentGame.state.fromItem = track;
         });
-        console.log('track', track);
       } else {
         console.error('Game: guessing ', to, 'from track not implemented');
       }

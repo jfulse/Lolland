@@ -97,7 +97,7 @@ class Player {
         query: { device_id: this.deviceId },
       });
       runInAction(() => {
-        this.playing.trackNumber += 1;
+        this.playing.trackNumber -= 1;
       });
     } catch (err) {
       console.error(err);

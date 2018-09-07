@@ -6,5 +6,6 @@ export { default as Route } from './Route';
 export { default as Album } from './Album';
 export { default as Track } from './Track';
 export { default as Player } from './Player';
+export { default as Playlist } from './Playlist';
 export { default as Artist } from './Artist';
 export { default as Favourites } from './Favourites';

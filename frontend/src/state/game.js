@@ -1,6 +1,7 @@
 import {
   action, decorate, observable, runInAction,
 } from 'mobx';
+import axios from 'axios';
 
 import { categoryTypes, itemTypes, resultTypes } from '../constants';
 import { random } from '../utils';
@@ -22,7 +23,7 @@ const randomItem = async (collection) => {
   return item;
 };
 
-const formatAnswer = string => string.toLowerCase().replace(/^ ?the/, '').replace(/['!?´`" ]/, '');
+const formatAnswer = string => string.toLowerCase().replace(/^ ?the/, '').replace(/['!?´`"]/, '');
 
 const defaultState = {
   solutions: [],
@@ -42,14 +43,16 @@ const defaultGame = {
 };
 
 class Game {
-  constructor(albums, tracks) {
+  constructor(auth, albums, tracks, playlists) {
     runInAction(() => {
       this.currentGame = defaultGame;
       this.pastGames = [];
     });
 
+    this.auth = auth;
     this.albums = albums;
     this.tracks = tracks;
+    this.playlists = playlists;
 
     this.setTypeFrom = this.setTypeFrom.bind(this);
     this.setTypeTo = this.setTypeTo.bind(this);
@@ -69,7 +72,26 @@ class Game {
 
   async getRandomFrom() {
     const { type: { from, to } } = this.currentGame;
-    if (from === itemTypes.ALBUM) {
+    if (to === itemTypes.PLAYLIST) {
+      if (from === itemTypes.TRACK) {
+        const { token } = this.auth;
+        const playlist = await randomItem(this.playlists);
+        const { tracks: { href }, name } = playlist;
+        const { data: { items } } = await axios({
+          url: href,
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const { track } = items[random(items.length)];
+
+        runInAction(() => {
+          this.currentGame.state.solutions = [formatAnswer(name)];
+          this.currentGame.state.fromItem = track;
+        });
+      } else {
+        console.error('Can only guess playlist from track');
+      }
+    } else if (from === itemTypes.ALBUM) {
       const album = await randomItem(this.albums);
       if (to === itemTypes.ARTIST) {
         runInAction(() => {
@@ -79,8 +101,7 @@ class Game {
       } else {
         console.error('Game: guessing ', to, 'from album not implemented');
       }
-    }
-    if (from === itemTypes.TRACK) {
+    } else if (from === itemTypes.TRACK) {
       const track = await randomItem(this.tracks);
       if (to === itemTypes.ARTIST) {
         runInAction(() => {
@@ -95,6 +116,8 @@ class Game {
       } else {
         console.error('Game: guessing ', to, 'from track not implemented');
       }
+    } else {
+      console.error('Game: guessing from ', from, 'not implemented');
     }
   }
 

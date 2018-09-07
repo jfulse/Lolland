@@ -7,7 +7,7 @@ const HeartWrapper = styled.div`
   top: 0;
   right: 0;
   padding: 3px;
-  z-index: 1;
+  z-index: 10;
   color: transparent;
   text-shadow: 0 0 3px red;
 

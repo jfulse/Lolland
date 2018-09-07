@@ -54,7 +54,7 @@ const Submit = ({
       />
       <StyledButton
         type="submit"
-        disabled={showAnswer}
+        disabled={showAnswer || guess === ''}
         onClick={() => {
           submitGuess(guess);
           setGuess('');

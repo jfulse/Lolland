@@ -4,7 +4,7 @@ import { compose } from 'recompose';
 import styled from 'styled-components';
 
 import {
-  Album, Submit, Result, Switch, Track,
+  Album, Playlist, Result, Submit, Switch, Track,
 } from '../../components';
 import { Game, Route } from '../../propTypes';
 import { itemTypes } from '../../constants';
@@ -91,13 +91,23 @@ class Quiz extends React.Component {
               emphasize={showAnswer && to}
             />
           </Switch.Case>
+          <Switch.Case caseName={itemTypes.PLAYLIST}>
+            <Playlist
+              playlist={fromItem}
+              hideArtists={!showAnswer}
+              hideCover={!showAnswer}
+              emphasize={showAnswer && to}
+            />
+          </Switch.Case>
           <Switch.Case caseName={itemTypes.TRACK}>
             <Track
               track={fromItem}
               hideArtists={!showAnswer}
               hideAlbum={!showAnswer}
+              hidePlaylist={!showAnswer}
               hideCover={!showAnswer}
               emphasize={showAnswer && to}
+              context={to}
             />
           </Switch.Case>
         </Switch>

@@ -15,3 +15,4 @@ export { default as Player } from './Player';
 export { default as Submit } from './Submit';
 export { default as Result } from './Result';
 export { default as Label } from './Label';
+export { default as Playlist } from './Playlist';

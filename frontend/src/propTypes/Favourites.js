@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 
-import { Artist, Album, Track } from '.';
+import Artist from './Artist';
+import Album from './Album';
+import Track from './Track';
 
 export default PropTypes.shape({
   artists: PropTypes.arrayOf(Artist).isRequired,

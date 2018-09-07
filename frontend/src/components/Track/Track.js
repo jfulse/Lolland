@@ -10,7 +10,7 @@ import {
 } from '..';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
-import { Favourites, Track as TrackType } from '../../propTypes';
+import { Favourites, Game, Track as TrackType } from '../../propTypes';
 import { strikeArtistsFromName } from '../../utils';
 
 const Image = styled.img`
@@ -20,6 +20,9 @@ const Image = styled.img`
 
 const Track = ({
   track,
+  game: {
+    currentGame: { state: { solutions: [playlistName] } },
+  },
   favourites: {
     isFavourite,
     setFavourite,
@@ -28,7 +31,9 @@ const Track = ({
   hideCover,
   hideArtists,
   hideAlbum,
+  hidePlaylist,
   emphasize,
+  context,
 }) => {
   const {
     name,
@@ -65,12 +70,22 @@ const Track = ({
             </Table.Cell>
           </Table.Column>
         </If>
-        <If condition={!hideAlbum}>
+        <If condition={!hideAlbum && [itemTypes.ALBUM, itemTypes.ARTIST].includes(context)}>
           <Table.Column emphasized={emphasize === itemTypes.ALBUM}>
             <Table.Cell>Album</Table.Cell>
             <Table.Cell>
               <strong>
                 {albumName}
+              </strong>
+            </Table.Cell>
+          </Table.Column>
+        </If>
+        <If condition={!hidePlaylist && context === itemTypes.PLAYLIST}>
+          <Table.Column emphasized={emphasize === itemTypes.PLAYLIST}>
+            <Table.Cell>Playlist</Table.Cell>
+            <Table.Cell>
+              <strong>
+                {playlistName}
               </strong>
             </Table.Cell>
           </Table.Column>
@@ -100,22 +115,27 @@ Track.propTypes = {
   hideCover: PropTypes.bool,
   hideArtists: PropTypes.bool,
   hideAlbum: PropTypes.bool,
+  hidePlaylist: PropTypes.bool,
   emphasize: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.oneOf(Object.keys(itemTypes)),
   ]),
   favourites: Favourites.isRequired,
+  game: Game.isRequired,
+  context: PropTypes.oneOf(Object.keys(itemTypes)).isRequired,
 };
 
 Track.defaultProps = {
   hideCover: false,
   hideArtists: false,
   hideAlbum: false,
+  hidePlaylist: false,
   emphasize: false,
 };
 
 export default compose(
   inject('favourites'),
+  inject('game'),
   waitForData('track.name'),
   observer,
 )(Track);

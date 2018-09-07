@@ -4,6 +4,7 @@ import { compose } from 'recompose';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { Pause } from '..';
 import { waitForModels } from '../../enhancers';
 import { Model } from '../../propTypes';
 
@@ -15,10 +16,13 @@ const StyledHeader = styled.h1`
   justify-content: space-between;
   align-items: center;
   padding: 20px;
+`;
 
-  // a:last-of-type {
-  //   visibility: hidden;
-  // }
+const LeftWrapper = styled.span`
+  display: flex;
+  width: 70px;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const StyledLink = styled(Link)`
@@ -30,7 +34,10 @@ const FavouritesButton = () => <StyledLink to="/favourites">Favourites</StyledLi
 
 const Header = ({ user }) => (
   <StyledHeader>
-    <HomeButton />
+    <LeftWrapper>
+      <HomeButton />
+      <Pause />
+    </LeftWrapper>
     {user.get('id')}
     <FavouritesButton />
   </StyledHeader>

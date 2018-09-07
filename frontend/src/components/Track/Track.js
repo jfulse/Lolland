@@ -47,7 +47,7 @@ const Track = ({
   return (
     <Panel width="800px">
       <Heart outline={!trackIsFavourite} onClick={onHeartClick} />
-      <Player uri={uri} />
+      <Player uri={uri} hasContext={false} />
       <Table>
         <Background image={images[0].url} />
         <If condition={!hideCover}>

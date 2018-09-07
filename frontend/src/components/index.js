@@ -1,6 +1,7 @@
 // NOTE: The order is significant
 export { default as Loader } from './Loader';
 export { default as Header } from './Header';
+export { default as Pause } from './Pause';
 export { default as Choose } from './Choose';
 export { default as Switch } from './Switch';
 export { default as Heart } from './Heart';

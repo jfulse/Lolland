@@ -7,10 +7,8 @@ import { Router } from 'react-router-dom';
 
 import App from './App';
 import {
-  Albums, Auth, Favourites, Game, Player, Playlists, Popups, Tracks, User,
+  Albums, Artists, Auth, Favourites, Game, Player, Playlists, Popups, Tracks, User,
 } from './state';
-
-const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
 
 const documentElement = document.getElementById('ReactApp');
 
@@ -18,10 +16,11 @@ if (!documentElement) {
   throw Error('React document element not found');
 }
 
-const browserHistory = createBrowserHistory();
+const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
 
 const auth = new Auth();
 const albums = new Albums();
+const artists = new Artists(auth, SPOTIFY_API_URL);
 const favourites = new Favourites();
 const player = new Player(auth, SPOTIFY_API_URL);
 const popups = new Popups();
@@ -33,6 +32,7 @@ const user = new User();
 
 const stores = {
   albums,
+  artists,
   auth,
   favourites,
   game,
@@ -44,6 +44,7 @@ const stores = {
   user,
 };
 
+const browserHistory = createBrowserHistory();
 const history = syncHistoryWithStore(browserHistory, route);
 
 ReactDOM.render(

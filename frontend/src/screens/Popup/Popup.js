@@ -3,12 +3,12 @@ import { inject, observer } from 'mobx-react';
 import { branch, compose, renderNothing } from 'recompose';
 import styled from 'styled-components';
 
-import { Album } from '../../components';
+import { Album, Artist } from '../../components';
 import { Popups } from '../../propTypes';
-import { printProps } from '../../utils';
 
 const components = ({
   Album,
+  Artist,
 });
 
 const PopupWrapper = styled.div`
@@ -74,5 +74,4 @@ export default compose(
     ({ popups: { isOpen } }) => !isOpen,
     renderNothing,
   ),
-  printProps,
 )(Popup);

@@ -6,18 +6,25 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import {
-  Background, Heart, If, Label, Panel, Player, Table,
+  Background, Heart, If, Label, Panel, Player, ScrollList, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
 import {
-  Favourites, Game, Popups, Track as TrackType,
+  Collection, Favourites, Game, Popups, Track as TrackType,
 } from '../../propTypes';
-import { strikeArtistsFromName } from '../../utils';
+import { intersperse, strikeArtistsFromName } from '../../utils';
 
 const Image = styled.img`
   width: 100px;
   border: 1px solid black;
+`;
+
+const StyledButton = styled.div`
+  display: inline-block;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const Track = ({
@@ -28,6 +35,7 @@ const Track = ({
   hidePlaylist,
   emphasize,
   context,
+  artists: { get },
   popups: { openPopup },
   game: {
     currentGame: { state: { solutions: [playlistName] } },
@@ -52,6 +60,18 @@ const Track = ({
   const onHeartClick = () => (trackIsFavourite
     ? unSetFavourite(itemTypes.TRACK, track)
     : setFavourite(itemTypes.TRACK, track));
+  const artistList = artists.map(({ id, name: artistName }) => (
+    <StyledButton
+      key={id}
+      type="button"
+      onClick={async () => {
+        const artist = await get(id);
+        openPopup('Artist', 'Artist', { artist });
+      }}
+    >
+      {artistName}
+    </StyledButton>
+  ));
 
   return (
     <Panel width="800px">
@@ -65,12 +85,12 @@ const Track = ({
           </Table.Column>
         </If>
         <If condition={!hideArtists}>
-          <Table.Column emphasized={emphasize === itemTypes.ARTIST}>
+          <Table.Column emphasized={emphasize === itemTypes.ARTIST} clickable>
             <Table.Cell>{`Artist${artists.length > 1 ? 's' : ''}`}</Table.Cell>
             <Table.Cell>
-              <strong>
-                {artists.map(({ name: artistName }) => artistName).join(', ')}
-              </strong>
+              <ScrollList bold>
+                {intersperse(artistList, ', ')}
+              </ScrollList>
             </Table.Cell>
           </Table.Column>
         </If>
@@ -119,6 +139,7 @@ const Track = ({
 };
 
 Track.propTypes = {
+  artists: Collection.isRequired,
   context: PropTypes.oneOf(Object.keys(itemTypes)).isRequired,
   emphasize: PropTypes.oneOfType([
     PropTypes.bool,
@@ -143,6 +164,7 @@ Track.defaultProps = {
 };
 
 export default compose(
+  inject('artists'),
   inject('favourites'),
   inject('game'),
   inject('popups'),

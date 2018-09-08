@@ -6,12 +6,12 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import {
-  Background, Heart, If, Label, Panel, Player, Table,
+  Background, Heart, If, Label, Panel, Player, ScrollList, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
 import { Album as AlbumType, Favourites } from '../../propTypes';
-import { strikeArtistsFromName } from '../../utils';
+import { intersperse, strikeArtistsFromName } from '../../utils';
 
 const Image = styled.img`
   width: 100px;
@@ -38,6 +38,7 @@ const Album = ({
   const onHeartClick = () => (albumIsFavourite
     ? unSetFavourite(itemTypes.ALBUM, album)
     : setFavourite(itemTypes.ALBUM, album));
+  const artistNames = artists.map(({ name: artistName }) => artistName);
 
   return (
     <Panel width="800px">
@@ -54,9 +55,9 @@ const Album = ({
           <Table.Column emphasized={emphasize === itemTypes.ARTIST}>
             <Table.Cell>{`Artist${artists.length > 1 ? 's' : ''}`}</Table.Cell>
             <Table.Cell>
-              <strong>
-                {artists.map(({ name: artistName }) => artistName).join(', ')}
-              </strong>
+              <ScrollList bold>
+                {intersperse(artistNames, ', ')}
+              </ScrollList>
             </Table.Cell>
           </Table.Column>
         </If>

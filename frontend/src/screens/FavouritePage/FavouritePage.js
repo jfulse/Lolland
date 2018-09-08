@@ -3,7 +3,9 @@ import { inject, observer } from 'mobx-react';
 import { compose } from 'recompose';
 import styled from 'styled-components';
 
-import { Album, If, Track } from '../../components';
+import {
+  Album, Artist, If, Track,
+} from '../../components';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
 import { Favourites } from '../../propTypes';
@@ -19,7 +21,9 @@ const FavouritePage = ({ favourites: { artists, albums, tracks } }) => (
       <ItemHeader>
         Artists
       </ItemHeader>
-      {artists.map(({ name }) => name).join(', ')}
+      {artists.map(artist => (
+        <Artist artist={artist} key={artist.id} />
+      ))}
     </If>
     <If condition={albums.length > 0}>
       <ItemHeader>

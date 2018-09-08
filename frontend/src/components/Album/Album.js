@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import {
-  Background, Heart, If, Label, Panel, Player, ScrollList, Table,
+  Background, Heart, If, ItemButton, Label, Panel, Player, ScrollList, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
@@ -38,27 +38,24 @@ const Album = ({
   const onHeartClick = () => (albumIsFavourite
     ? unSetFavourite(itemTypes.ALBUM, album)
     : setFavourite(itemTypes.ALBUM, album));
-  const artistNames = artists.map(({ name: artistName }) => artistName);
+  const artistList = artists.map(({ id, name: artistName }) => (
+    <ItemButton
+      name={artistName}
+      key={id}
+      id={id}
+      itemType={itemTypes.ARTIST}
+    />
+  ));
 
   return (
     <Panel width="800px">
       <Heart outline={!albumIsFavourite} onClick={onHeartClick} />
       <Player uri={uri} hasContext />
       <Table>
-        <Background image={images[0].url} />
+        <Background imageUrl={images[0].url} />
         <If condition={!hideCover}>
           <Table.Column>
             <Image src={images[0].url} alt="Album cover" />
-          </Table.Column>
-        </If>
-        <If condition={!hideArtists}>
-          <Table.Column emphasized={emphasize === itemTypes.ARTIST}>
-            <Table.Cell>{`Artist${artists.length > 1 ? 's' : ''}`}</Table.Cell>
-            <Table.Cell>
-              <ScrollList bold>
-                {intersperse(artistNames, ', ')}
-              </ScrollList>
-            </Table.Cell>
           </Table.Column>
         </If>
         <Table.Column>
@@ -67,6 +64,16 @@ const Album = ({
             <strong>{albumName}</strong>
           </Table.Cell>
         </Table.Column>
+        <If condition={!hideArtists}>
+          <Table.Column emphasized={emphasize === itemTypes.ARTIST}>
+            <Table.Cell>{`Artist${artists.length > 1 ? 's' : ''}`}</Table.Cell>
+            <Table.Cell>
+              <ScrollList bold>
+                {intersperse(artistList, ', ')}
+              </ScrollList>
+            </Table.Cell>
+          </Table.Column>
+        </If>
         <Table.Column>
           <Table.Cell>Year</Table.Cell>
           <Table.Cell>

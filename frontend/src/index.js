@@ -19,7 +19,7 @@ if (!documentElement) {
 const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
 
 const auth = new Auth();
-const albums = new Albums();
+const albums = new Albums(auth, SPOTIFY_API_URL);
 const artists = new Artists(auth, SPOTIFY_API_URL);
 const favourites = new Favourites();
 const player = new Player(auth, SPOTIFY_API_URL);

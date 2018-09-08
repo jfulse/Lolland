@@ -21,10 +21,6 @@ const Column = styled.div`
   z-index: 2;
   padding: 10px;
   color: ${({ emphasized }) => (emphasized ? '#85f9a5' : '#fdfdfd')};
-
-  &:hover {
-    cursor: ${({ clickable }) => (clickable ? 'pointer' : 'default')};
-  }
 `;
 
 const Cell = styled.div`

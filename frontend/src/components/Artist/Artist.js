@@ -10,7 +10,7 @@ import {
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
 import { Artist as ArtistType, Favourites } from '../../propTypes';
-import { intersperse, random } from '../../utils';
+import { intersperse } from '../../utils';
 
 const Image = styled.img`
   width: 100px;
@@ -33,7 +33,7 @@ const Artist = ({
   const onHeartClick = () => (albumIsFavourite
     ? unSetFavourite(itemTypes.ARTIST, artist)
     : setFavourite(itemTypes.ARTIST, artist));
-  const image = images.length ? images[random(images.length)] : null;
+  const imageUrl = images.length && images[0].url ? images[0].url : null;
   const albumNames = albums.map(({ name: albumName }) => albumName);
 
   return (
@@ -41,10 +41,10 @@ const Artist = ({
       <Heart outline={!albumIsFavourite} onClick={onHeartClick} />
       <Player uri={uri} hasContext />
       <Table>
-        {image && <Background image={image.url} />}
-        <If condition={!hideImage && Boolean(image)}>
+        <Background imageUrl={imageUrl} defaultImage={!imageUrl} />
+        <If condition={!hideImage && Boolean(imageUrl)}>
           <Table.Column>
-            <Image src={image.url} alt="Artist image" />
+            <Image src={imageUrl} alt="Artist image" />
           </Table.Column>
         </If>
         <Table.Column>

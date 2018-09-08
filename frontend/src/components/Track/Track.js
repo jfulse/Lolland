@@ -6,25 +6,18 @@ import styled from 'styled-components';
 import moment from 'moment';
 
 import {
-  Background, Heart, If, Label, Panel, Player, ScrollList, Table,
+  Background, Heart, If, ItemButton, Label, Panel, Player, ScrollList, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
 import {
-  Collection, Favourites, Game, Popups, Track as TrackType,
+  Favourites, Game, Track as TrackType,
 } from '../../propTypes';
 import { intersperse, strikeArtistsFromName } from '../../utils';
 
 const Image = styled.img`
   width: 100px;
   border: 1px solid black;
-`;
-
-const StyledButton = styled.div`
-  display: inline-block;
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 const Track = ({
@@ -35,8 +28,6 @@ const Track = ({
   hidePlaylist,
   emphasize,
   context,
-  artists: { get },
-  popups: { openPopup },
   game: {
     currentGame: { state: { solutions: [playlistName] } },
   },
@@ -52,7 +43,7 @@ const Track = ({
     album,
   } = track;
   const {
-    name: albumName, release_date: date, images, artists,
+    id: albumId, name: albumName, release_date: date, images, artists,
   } = album;
   const year = moment(date).format('YYYY');
   const trackName = hideArtists ? strikeArtistsFromName(artists, name) : name;
@@ -61,16 +52,12 @@ const Track = ({
     ? unSetFavourite(itemTypes.TRACK, track)
     : setFavourite(itemTypes.TRACK, track));
   const artistList = artists.map(({ id, name: artistName }) => (
-    <StyledButton
+    <ItemButton
+      name={artistName}
       key={id}
-      type="button"
-      onClick={async () => {
-        const artist = await get(id);
-        openPopup('Artist', 'Artist', { artist });
-      }}
-    >
-      {artistName}
-    </StyledButton>
+      id={id}
+      itemType={itemTypes.ARTIST}
+    />
   ));
 
   return (
@@ -78,14 +65,20 @@ const Track = ({
       <Heart outline={!trackIsFavourite} onClick={onHeartClick} />
       <Player uri={uri} hasContext={false} />
       <Table>
-        <Background image={images[0].url} />
+        <Background imageUrl={images[0].url} />
         <If condition={!hideCover}>
           <Table.Column>
             <Image src={images[0].url} alt="Album cover" />
           </Table.Column>
         </If>
+        <Table.Column>
+          <Table.Cell>Title</Table.Cell>
+          <Table.Cell>
+            <strong>{trackName}</strong>
+          </Table.Cell>
+        </Table.Column>
         <If condition={!hideArtists}>
-          <Table.Column emphasized={emphasize === itemTypes.ARTIST} clickable>
+          <Table.Column emphasized={emphasize === itemTypes.ARTIST}>
             <Table.Cell>{`Artist${artists.length > 1 ? 's' : ''}`}</Table.Cell>
             <Table.Cell>
               <ScrollList bold>
@@ -95,15 +88,16 @@ const Track = ({
           </Table.Column>
         </If>
         <If condition={!hideAlbum && [itemTypes.ALBUM, itemTypes.ARTIST].includes(context)}>
-          <Table.Column
-            emphasized={emphasize === itemTypes.ALBUM}
-            onClick={() => openPopup('Album', 'Album', { album })}
-            clickable
-          >
+          <Table.Column emphasized={emphasize === itemTypes.ALBUM}>
             <Table.Cell>Album</Table.Cell>
             <Table.Cell>
               <strong>
-                {albumName}
+                <ItemButton
+                  name={albumName}
+                  key={albumId}
+                  id={albumId}
+                  itemType={itemTypes.ALBUM}
+                />
               </strong>
             </Table.Cell>
           </Table.Column>
@@ -119,12 +113,6 @@ const Track = ({
           </Table.Column>
         </If>
         <Table.Column>
-          <Table.Cell>Title</Table.Cell>
-          <Table.Cell>
-            <strong>{trackName}</strong>
-          </Table.Cell>
-        </Table.Column>
-        <Table.Column>
           <Table.Cell>Year</Table.Cell>
           <Table.Cell>
             <strong>{year}</strong>
@@ -139,7 +127,6 @@ const Track = ({
 };
 
 Track.propTypes = {
-  artists: Collection.isRequired,
   context: PropTypes.oneOf(Object.keys(itemTypes)).isRequired,
   emphasize: PropTypes.oneOfType([
     PropTypes.bool,
@@ -151,7 +138,6 @@ Track.propTypes = {
   hideArtists: PropTypes.bool,
   hideCover: PropTypes.bool,
   hidePlaylist: PropTypes.bool,
-  popups: Popups.isRequired,
   track: TrackType.isRequired,
 };
 
@@ -164,10 +150,8 @@ Track.defaultProps = {
 };
 
 export default compose(
-  inject('artists'),
   inject('favourites'),
   inject('game'),
-  inject('popups'),
   waitForData('track.name'),
   observer,
 )(Track);

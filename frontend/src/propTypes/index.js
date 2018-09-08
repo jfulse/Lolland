@@ -1,11 +1,12 @@
+export { default as Album } from './Album';
+export { default as Artist } from './Artist';
 export { default as Children } from './Children';
 export { default as Collection } from './Collection';
+export { default as Favourites } from './Favourites';
 export { default as Game } from './Game';
 export { default as Model } from './Model';
 export { default as Route } from './Route';
-export { default as Album } from './Album';
-export { default as Track } from './Track';
 export { default as Player } from './Player';
 export { default as Playlist } from './Playlist';
-export { default as Artist } from './Artist';
-export { default as Favourites } from './Favourites';
+export { default as Popups } from './Popups';
+export { default as Track } from './Track';

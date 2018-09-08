@@ -10,7 +10,9 @@ import {
 } from '..';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
-import { Favourites, Game, Track as TrackType } from '../../propTypes';
+import {
+  Favourites, Game, Popups, Track as TrackType,
+} from '../../propTypes';
 import { strikeArtistsFromName } from '../../utils';
 
 const Image = styled.img`
@@ -20,6 +22,13 @@ const Image = styled.img`
 
 const Track = ({
   track,
+  hideCover,
+  hideArtists,
+  hideAlbum,
+  hidePlaylist,
+  emphasize,
+  context,
+  popups: { openPopup },
   game: {
     currentGame: { state: { solutions: [playlistName] } },
   },
@@ -28,20 +37,15 @@ const Track = ({
     setFavourite,
     unSetFavourite,
   },
-  hideCover,
-  hideArtists,
-  hideAlbum,
-  hidePlaylist,
-  emphasize,
-  context,
 }) => {
   const {
     name,
     uri,
-    album: {
-      name: albumName, release_date: date, images, artists,
-    },
+    album,
   } = track;
+  const {
+    name: albumName, release_date: date, images, artists,
+  } = album;
   const year = moment(date).format('YYYY');
   const trackName = hideArtists ? strikeArtistsFromName(artists, name) : name;
   const trackIsFavourite = isFavourite(itemTypes.TRACK, track);
@@ -71,7 +75,11 @@ const Track = ({
           </Table.Column>
         </If>
         <If condition={!hideAlbum && [itemTypes.ALBUM, itemTypes.ARTIST].includes(context)}>
-          <Table.Column emphasized={emphasize === itemTypes.ALBUM}>
+          <Table.Column
+            emphasized={emphasize === itemTypes.ALBUM}
+            onClick={() => openPopup('Album', 'Album', { album })}
+            clickable
+          >
             <Table.Cell>Album</Table.Cell>
             <Table.Cell>
               <strong>
@@ -111,18 +119,19 @@ const Track = ({
 };
 
 Track.propTypes = {
-  track: TrackType.isRequired,
-  hideCover: PropTypes.bool,
-  hideArtists: PropTypes.bool,
-  hideAlbum: PropTypes.bool,
-  hidePlaylist: PropTypes.bool,
+  context: PropTypes.oneOf(Object.keys(itemTypes)).isRequired,
   emphasize: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.oneOf(Object.keys(itemTypes)),
   ]),
   favourites: Favourites.isRequired,
   game: Game.isRequired,
-  context: PropTypes.oneOf(Object.keys(itemTypes)).isRequired,
+  hideAlbum: PropTypes.bool,
+  hideArtists: PropTypes.bool,
+  hideCover: PropTypes.bool,
+  hidePlaylist: PropTypes.bool,
+  popups: Popups.isRequired,
+  track: TrackType.isRequired,
 };
 
 Track.defaultProps = {
@@ -136,6 +145,7 @@ Track.defaultProps = {
 export default compose(
   inject('favourites'),
   inject('game'),
+  inject('popups'),
   waitForData('track.name'),
   observer,
 )(Track);

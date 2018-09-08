@@ -9,7 +9,9 @@ import axios from 'axios';
 import { compose, lifecycle } from 'recompose';
 import queryString from 'query-string';
 
-import { FavouritePage, Quiz, SetupGame } from './routes';
+import {
+  FavouritePage, Quiz, Popup, SetupGame,
+} from './screens';
 import { Header } from './components';
 import initPlayer from './initPlayer';
 
@@ -29,6 +31,7 @@ const App = () => (
       <Route path="/quiz" component={Quiz} />
       <Route path="/favourites" component={FavouritePage} />
     </Switch>
+    <Popup />
   </div>
 );
 

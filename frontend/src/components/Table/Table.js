@@ -20,7 +20,11 @@ const Column = styled.div`
   text-shadow: 0 0 10px black;
   z-index: 2;
   padding: 10px;
-  color: ${({ emphasized }) => (emphasized ? '#85f9a5' : '#fdfdfd')}
+  color: ${({ emphasized }) => (emphasized ? '#85f9a5' : '#fdfdfd')};
+
+  &:hover {
+    cursor: ${({ clickable }) => (clickable ? 'pointer' : 'default')};
+  }
 `;
 
 const Cell = styled.div`

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { Album, If, Track } from '../../components';
 import { waitForData } from '../../enhancers';
+import { itemTypes } from '../../constants';
 import { Favourites } from '../../propTypes';
 
 const ItemHeader = styled.h2`
@@ -33,7 +34,7 @@ const FavouritePage = ({ favourites: { artists, albums, tracks } }) => (
         Tracks
       </ItemHeader>
       {tracks.map(track => (
-        <Track track={track} key={track.uri} />
+        <Track track={track} key={track.uri} context={itemTypes.ALBUM} />
       ))}
     </If>
   </div>

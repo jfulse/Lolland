@@ -7,7 +7,7 @@ import { Router } from 'react-router-dom';
 
 import App from './App';
 import {
-  Albums, Auth, Favourites, Game, Player, Playlists, Tracks, User,
+  Albums, Auth, Favourites, Game, Player, Playlists, Popups, Tracks, User,
 } from './state';
 
 const SPOTIFY_API_URL = 'https://api.spotify.com/v1';
@@ -24,6 +24,7 @@ const auth = new Auth();
 const albums = new Albums();
 const favourites = new Favourites();
 const player = new Player(auth, SPOTIFY_API_URL);
+const popups = new Popups();
 const route = new RouterStore();
 const tracks = new Tracks();
 const playlists = new Playlists();
@@ -37,6 +38,7 @@ const stores = {
   game,
   player,
   playlists,
+  popups,
   route,
   tracks,
   user,

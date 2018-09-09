@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { compose } from 'recompose';
+import { compose, lifecycle } from 'recompose';
 import styled from 'styled-components';
 
 import { If } from '..';
@@ -114,4 +114,28 @@ Player.propTypes = {
 export default compose(
   inject('player'),
   observer,
+  lifecycle({
+    componentDidMount() {
+      const {
+        hasContext,
+        uri,
+        autoplay,
+        player: { play },
+      } = this.props;
+      if (autoplay) {
+        play(hasContext, uri);
+      }
+    },
+    componentDidUpdate({ hasContext: newHasContext, uri: newUri }) {
+      const {
+        hasContext,
+        uri,
+        autoplay,
+        player: { play },
+      } = this.props;
+      if (autoplay && (hasContext !== newHasContext || uri !== newUri)) {
+        play(hasContext, uri);
+      }
+    },
+  }),
 )(Player);

@@ -23,6 +23,9 @@ const CurrentGame = PropTypes.shape({
   wrongAnswers: PropTypes.number.isRequired,
   state: GameState.isRequired,
   history: PropTypes.arrayOf(GameState).isRequired,
+  settings: PropTypes.shape({
+    autoplay: PropTypes.bool,
+  }).isRequired,
 });
 
 export default PropTypes.shape({
@@ -30,6 +33,7 @@ export default PropTypes.shape({
   pastGames: PropTypes.arrayOf(CurrentGame).isRequired,
   setTypeFrom: PropTypes.func.isRequired,
   setTypeTo: PropTypes.func.isRequired,
+  setSettings: PropTypes.func.isRequired,
   getRandomFrom: PropTypes.func.isRequired,
   submitGuess: PropTypes.func.isRequired,
   reveal: PropTypes.func.isRequired,

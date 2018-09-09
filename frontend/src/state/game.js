@@ -41,6 +41,7 @@ const defaultGame = {
   wrongAnswers: 0,
   state: defaultState,
   history: [],
+  settings: { autoplay: false },
 };
 
 class Game {
@@ -57,6 +58,7 @@ class Game {
 
     this.setTypeFrom = this.setTypeFrom.bind(this);
     this.setTypeTo = this.setTypeTo.bind(this);
+    this.setSettings = this.setSettings.bind(this);
     this.getRandomFrom = this.getRandomFrom.bind(this);
     this.submitGuess = this.submitGuess.bind(this);
     this.reveal = this.reveal.bind(this);
@@ -69,6 +71,10 @@ class Game {
 
   setTypeTo(to) {
     this.currentGame.type.to = to;
+  }
+
+  setSettings(settings) {
+    this.currentGame.settings = settings;
   }
 
   async getRandomFrom() {
@@ -164,6 +170,7 @@ decorate(Game, {
   pastGames: observable,
   setTypeFrom: action,
   setTypeTo: action,
+  setSettings: action,
   getRandomFrom: action,
   submitGuess: action,
   reveal: action,

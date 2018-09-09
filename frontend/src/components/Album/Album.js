@@ -29,6 +29,7 @@ const Album = ({
   hideArtists,
   hideTracks,
   emphasize,
+  autoplay,
 }) => {
   const {
     name,
@@ -39,7 +40,6 @@ const Album = ({
     tracks,
     album_type: type,
   } = album;
-  console.log('album', album);
   const year = moment(date).format('YYYY');
   const albumName = hideArtists ? strikeArtistsFromName(artists, name) : name;
   const albumIsFavourite = isFavourite(itemTypes.ALBUM, album);
@@ -70,7 +70,7 @@ const Album = ({
   return (
     <Panel width="800px">
       <Heart outline={!albumIsFavourite} onClick={onHeartClick} />
-      <Player uri={uri} hasContext />
+      <Player uri={uri} hasContext autoplay={autoplay} />
       <Table>
         <Background imageUrl={images[0].url} />
         <If condition={!hideCover}>
@@ -128,6 +128,7 @@ Album.propTypes = {
     PropTypes.bool,
     PropTypes.oneOf(Object.keys(itemTypes)),
   ]),
+  autoplay: PropTypes.bool,
 };
 
 Album.defaultProps = {
@@ -135,6 +136,7 @@ Album.defaultProps = {
   hideArtists: false,
   hideTracks: false,
   emphasize: false,
+  autoplay: false,
 };
 
 export default compose(

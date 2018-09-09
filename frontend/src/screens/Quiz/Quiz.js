@@ -59,6 +59,7 @@ class Quiz extends React.Component {
         currentGame: {
           correctAnswers,
           wrongAnswers,
+          settings: { autoplay },
           state: { fromItem, showAnswer, toItems },
           type: { from, to },
         },
@@ -89,6 +90,7 @@ class Quiz extends React.Component {
               hideArtists={!showAnswer}
               hideCover={!showAnswer}
               emphasize={showAnswer && to}
+              autoplay={autoplay}
             />
           </Switch.Case>
           <Switch.Case caseName={itemTypes.PLAYLIST}>
@@ -97,6 +99,7 @@ class Quiz extends React.Component {
               hideArtists={!showAnswer}
               hideCover={!showAnswer}
               emphasize={showAnswer && to}
+              autoplay={autoplay}
             />
           </Switch.Case>
           <Switch.Case caseName={itemTypes.TRACK}>
@@ -108,6 +111,7 @@ class Quiz extends React.Component {
               hideCover={!showAnswer}
               emphasize={showAnswer && to}
               context={{ type: to, item: toItems[0] }}
+              autoplay={autoplay}
             />
           </Switch.Case>
         </Switch>

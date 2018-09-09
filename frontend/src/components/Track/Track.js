@@ -57,6 +57,7 @@ const Track = ({
       key={id}
       id={id}
       itemType={itemTypes.ARTIST}
+      context={itemTypes.TRACK}
     />
   ));
 
@@ -97,6 +98,7 @@ const Track = ({
                   key={albumId}
                   id={albumId}
                   itemType={itemTypes.ALBUM}
+                  context={itemTypes.TRACK}
                 />
               </strong>
             </Table.Cell>

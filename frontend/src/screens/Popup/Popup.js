@@ -3,12 +3,13 @@ import { inject, observer } from 'mobx-react';
 import { branch, compose, renderNothing } from 'recompose';
 import styled from 'styled-components';
 
-import { Album, Artist } from '../../components';
+import { Album, Artist, Track } from '../../components';
 import { Popups } from '../../propTypes';
 
 const components = ({
   Album,
   Artist,
+  Track,
 });
 
 const PopupWrapper = styled.div`

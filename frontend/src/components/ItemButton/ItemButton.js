@@ -19,6 +19,7 @@ const ItemButton = ({
   itemType,
   id,
   name,
+  context,
   albums: { get: getAlbum },
   artists: { get: getArtist },
   tracks: { get: getTrack },
@@ -47,7 +48,7 @@ const ItemButton = ({
       type="button"
       onClick={async () => {
         const item = await get(id);
-        openPopup(title, title, { [key]: item });
+        openPopup(title, title, { [key]: item, context });
       }}
     >
       {name}
@@ -59,6 +60,7 @@ ItemButton.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   itemType: PropTypes.oneOf(Object.keys(itemTypes)).isRequired,
+  context: PropTypes.oneOf(Object.keys(itemTypes)).isRequired,
   popups: Popups.isRequired,
   albums: Collection.isRequired,
   artists: Collection.isRequired,

@@ -2,18 +2,24 @@ import { Collection, Model } from 'mobx-rest';
 import {
   action, decorate, observable, runInAction,
 } from 'mobx';
+import axios from 'axios';
 
 import { random } from '../utils';
 
 class Track extends Model {}
 
 class Tracks extends Collection {
-  constructor() {
+  constructor(auth, spotifyUrl) {
     super();
+    this.auth = auth;
+    this.spotifyUrl = spotifyUrl;
 
     runInAction(() => {
       this.total = null;
     });
+
+    this.get = this.get.bind(this);
+    this.set = this.set.bind(this);
   }
 
   setTotal(total) {
@@ -30,14 +36,24 @@ class Tracks extends Collection {
     });
   }
 
-  get(id) { // eslint-disable-line class-methods-use-this
+  async get(id) {
+    let track = null;
     if (!id) {
-      const nTracks = this.models.length;
-      const idx = random(nTracks);
-      return this.models[idx].track;
+      // eslint-disable-next-line prefer-destructuring
+      track = this.models[random(this.models.length)].track;
+    } else {
+      track = (this.models || []).find(({ id: trackId }) => id === trackId);
+      if (!track) {
+        const { token } = this.auth;
+        const { data } = await axios({
+          url: `${this.spotifyUrl}/tracks/${id}`,
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        track = data;
+      }
     }
-    console.error('get by id not implemented yet!');
-    return null;
+    return track;
   }
 
   model() { // eslint-disable-line class-methods-use-this

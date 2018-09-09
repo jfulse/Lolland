@@ -27,10 +27,16 @@ const Album = ({
   },
   hideCover,
   hideArtists,
+  hideTracks,
   emphasize,
 }) => {
   const {
-    name, release_date: date, images, artists, uri,
+    name,
+    release_date: date,
+    images,
+    artists,
+    uri,
+    tracks,
   } = album;
   const year = moment(date).format('YYYY');
   const albumName = hideArtists ? strikeArtistsFromName(artists, name) : name;
@@ -44,6 +50,17 @@ const Album = ({
       key={id}
       id={id}
       itemType={itemTypes.ARTIST}
+      context={itemTypes.ALBUM}
+    />
+  ));
+  const albumTracks = tracks ? tracks.items : [];
+  const trackList = albumTracks.map(({ id, name: trackName }) => (
+    <ItemButton
+      name={trackName}
+      key={id}
+      id={id}
+      itemType={itemTypes.TRACK}
+      context={itemTypes.ALBUM}
     />
   ));
 
@@ -74,6 +91,16 @@ const Album = ({
             </Table.Cell>
           </Table.Column>
         </If>
+        <If condition={!hideTracks && Boolean(albumTracks.length)}>
+          <Table.Column emphasized={emphasize === itemTypes.ARTIST}>
+            <Table.Cell>{`Track${albumTracks.length > 1 ? 's' : ''}`}</Table.Cell>
+            <Table.Cell>
+              <ScrollList bold>
+                {intersperse(trackList, ', ')}
+              </ScrollList>
+            </Table.Cell>
+          </Table.Column>
+        </If>
         <Table.Column>
           <Table.Cell>Year</Table.Cell>
           <Table.Cell>
@@ -93,6 +120,7 @@ Album.propTypes = {
   favourites: Favourites.isRequired,
   hideCover: PropTypes.bool,
   hideArtists: PropTypes.bool,
+  hideTracks: PropTypes.bool,
   emphasize: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.oneOf(Object.keys(itemTypes)),
@@ -102,6 +130,7 @@ Album.propTypes = {
 Album.defaultProps = {
   hideCover: false,
   hideArtists: false,
+  hideTracks: false,
   emphasize: false,
 };
 

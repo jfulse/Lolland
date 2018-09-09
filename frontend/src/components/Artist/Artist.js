@@ -5,7 +5,7 @@ import { compose } from 'recompose';
 import styled from 'styled-components';
 
 import {
-  Background, Heart, If, Label, Panel, Player, ScrollList, Table,
+  Background, Heart, If, ItemButton, Label, Panel, Player, ScrollList, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
@@ -34,7 +34,15 @@ const Artist = ({
     ? unSetFavourite(itemTypes.ARTIST, artist)
     : setFavourite(itemTypes.ARTIST, artist));
   const imageUrl = images.length && images[0].url ? images[0].url : null;
-  const albumNames = albums.map(({ name: albumName }) => albumName);
+  const albumList = albums.map(({ id, name: albumName }) => (
+    <ItemButton
+      name={albumName}
+      key={id}
+      id={id}
+      itemType={itemTypes.ALBUM}
+      context={itemTypes.ARTIST}
+    />
+  ));
 
   return (
     <Panel width="800px">
@@ -57,7 +65,7 @@ const Artist = ({
           <Table.Cell>Albums</Table.Cell>
           <Table.Cell>
             <ScrollList bold>
-              {intersperse(albumNames, ', ')}
+              {intersperse(albumList, ', ')}
             </ScrollList>
           </Table.Cell>
         </Table.Column>

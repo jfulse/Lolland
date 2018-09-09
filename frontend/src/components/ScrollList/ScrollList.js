@@ -7,5 +7,5 @@ export default styled.div`
   overflow: scroll;
   z-index: 30;
   font-weight: ${({ bold }) => (bold ? 'bold' : 'normal')};
-  padding-right: 17px;
+  padding-right: 12px;
 `;

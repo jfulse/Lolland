@@ -7,6 +7,9 @@ const GameState = PropTypes.shape({
   answer: PropTypes.string,
   result: PropTypes.oneOf(Object.keys(resultTypes)).isRequired,
   fromItem: PropTypes.shape({}).isRequired,
+  toItems: PropTypes.arrayOf(
+    PropTypes.shape({}),
+  ).isRequired,
   showAnswer: PropTypes.bool.isRequired,
 });
 

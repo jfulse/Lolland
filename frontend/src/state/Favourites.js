@@ -6,16 +6,18 @@ import localStorage from 'mobx-localstorage';
 import { itemTypes } from '../constants';
 
 const storageKeys = {
-  [itemTypes.ARTIST]: 'LOLLAND_FAVOURITE_ARTISTS',
   [itemTypes.ALBUM]: 'LOLLAND_FAVOURITE_ALBUMS',
+  [itemTypes.ARTIST]: 'LOLLAND_FAVOURITE_ARTISTS',
+  [itemTypes.PLAYLIST]: 'LOLLAND_FAVOURITE_PLAYLISTS',
   [itemTypes.TRACK]: 'LOLLAND_FAVOURITE_TRACKS',
 };
 
 class Favourites {
   constructor() {
     runInAction(() => {
-      this.artists = [];
       this.albums = [];
+      this.artists = [];
+      this.playlists = [];
       this.tracks = [];
     });
 
@@ -30,10 +32,12 @@ class Favourites {
 
   getItems(itemType) {
     switch (itemType) {
-      case itemTypes.ARTIST:
-        return this.artists;
       case itemTypes.ALBUM:
         return this.albums;
+      case itemTypes.ARTIST:
+        return this.artists;
+      case itemTypes.PLAYLIST:
+        return this.playlists;
       case itemTypes.TRACK:
         return this.tracks;
       default:
@@ -43,11 +47,14 @@ class Favourites {
 
   setItems(itemType, items) {
     switch (itemType) {
+      case itemTypes.ALBUM:
+        this.albums = items;
+        break;
       case itemTypes.ARTIST:
         this.artists = items;
         break;
-      case itemTypes.ALBUM:
-        this.albums = items;
+      case itemTypes.PLAYLIST:
+        this.playlists = items;
         break;
       case itemTypes.TRACK:
         this.tracks = items;
@@ -83,16 +90,18 @@ class Favourites {
   }
 
   populateFromStore() {
-    this.artists = localStorage.getItem(storageKeys[itemTypes.ARTIST]) || [];
     this.albums = localStorage.getItem(storageKeys[itemTypes.ALBUM]) || [];
+    this.artists = localStorage.getItem(storageKeys[itemTypes.ARTIST]) || [];
+    this.playlists = localStorage.getItem(storageKeys[itemTypes.PLAYLIST]) || [];
     this.tracks = localStorage.getItem(storageKeys[itemTypes.TRACK]) || [];
   }
 }
 
 
 decorate(Favourites, {
-  artists: observable,
   albums: observable,
+  artists: observable,
+  playlists: observable,
   tracks: observable,
   setFavourite: action,
   unSetFavourite: action,

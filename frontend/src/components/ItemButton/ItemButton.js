@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { compose } from 'recompose';
 import styled from 'styled-components';
 
-import { Collection, Popups } from '../../propTypes';
+import { Collection, Context, Popups } from '../../propTypes';
 import { itemTypes } from '../../constants';
 import { capitalize } from '../../utils';
 
@@ -12,6 +12,7 @@ const StyledButton = styled.div`
   display: inline;
   &:hover {
     cursor: pointer;
+    filter: brightness(85%);
   }
 `;
 
@@ -22,6 +23,7 @@ const ItemButton = ({
   context,
   albums: { get: getAlbum },
   artists: { get: getArtist },
+  playlists: { get: getPlaylist },
   tracks: { get: getTrack },
   popups: { openPopup },
 }) => {
@@ -38,6 +40,9 @@ const ItemButton = ({
       break;
     case itemTypes.TRACK:
       get = getTrack;
+      break;
+    case itemTypes.PLAYLIST:
+      get = getPlaylist;
       break;
     default:
       break;
@@ -60,10 +65,11 @@ ItemButton.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   itemType: PropTypes.oneOf(Object.keys(itemTypes)).isRequired,
-  context: PropTypes.oneOf(Object.keys(itemTypes)).isRequired,
+  context: Context.isRequired,
   popups: Popups.isRequired,
   albums: Collection.isRequired,
   artists: Collection.isRequired,
+  playlists: Collection.isRequired,
   tracks: Collection.isRequired,
 };
 
@@ -71,6 +77,7 @@ export default compose(
   inject('albums'),
   inject('artists'),
   inject('tracks'),
+  inject('playlists'),
   inject('popups'),
   observer,
 )(ItemButton);

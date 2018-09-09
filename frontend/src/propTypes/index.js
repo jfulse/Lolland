@@ -2,6 +2,7 @@ export { default as Album } from './Album';
 export { default as Artist } from './Artist';
 export { default as Children } from './Children';
 export { default as Collection } from './Collection';
+export { default as Context } from './Context';
 export { default as Favourites } from './Favourites';
 export { default as Game } from './Game';
 export { default as Model } from './Model';

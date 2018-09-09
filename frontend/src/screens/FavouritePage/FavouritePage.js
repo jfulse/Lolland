@@ -4,7 +4,7 @@ import { compose } from 'recompose';
 import styled from 'styled-components';
 
 import {
-  Album, Artist, If, Track,
+  Album, Artist, If, Playlist, Track,
 } from '../../components';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
@@ -15,7 +15,11 @@ const ItemHeader = styled.h2`
   margin: 35px;
 `;
 
-const FavouritePage = ({ favourites: { artists, albums, tracks } }) => (
+const FavouritePage = ({
+  favourites: {
+    albums, artists, playlists, tracks,
+  },
+}) => (
   <div>
     <If condition={artists.length > 0}>
       <ItemHeader>
@@ -38,7 +42,22 @@ const FavouritePage = ({ favourites: { artists, albums, tracks } }) => (
         Tracks
       </ItemHeader>
       {tracks.map(track => (
-        <Track track={track} key={track.uri} context={itemTypes.ALBUM} />
+        <Track
+          track={track}
+          key={track.uri}
+          context={{ type: itemTypes.ARTIST, item: {} }}
+        />
+      ))}
+    </If>
+    <If condition={playlists.length > 0}>
+      <ItemHeader>
+        Playlists
+      </ItemHeader>
+      {playlists.map(playlist => (
+        <Playlist
+          playlist={playlist}
+          key={playlist.uri}
+        />
       ))}
     </If>
   </div>

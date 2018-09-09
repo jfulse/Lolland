@@ -11,7 +11,7 @@ import {
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
 import {
-  Favourites, Game, Track as TrackType,
+  Context, Favourites, Track as TrackType,
 } from '../../propTypes';
 import { intersperse, strikeArtistsFromName } from '../../utils';
 
@@ -27,10 +27,7 @@ const Track = ({
   hideAlbum,
   hidePlaylist,
   emphasize,
-  context,
-  game: {
-    currentGame: { state: { solutions: [playlistName] } },
-  },
+  context: { type: contextType, item: contextItem },
   favourites: {
     isFavourite,
     setFavourite,
@@ -51,13 +48,14 @@ const Track = ({
   const onHeartClick = () => (trackIsFavourite
     ? unSetFavourite(itemTypes.TRACK, track)
     : setFavourite(itemTypes.TRACK, track));
+  const trackContext = { type: itemTypes.TRACK, item: track };
   const artistList = artists.map(({ id, name: artistName }) => (
     <ItemButton
       name={artistName}
       key={id}
       id={id}
       itemType={itemTypes.ARTIST}
-      context={itemTypes.TRACK}
+      context={trackContext}
     />
   ));
 
@@ -88,7 +86,7 @@ const Track = ({
             </Table.Cell>
           </Table.Column>
         </If>
-        <If condition={!hideAlbum && [itemTypes.ALBUM, itemTypes.ARTIST].includes(context)}>
+        <If condition={!hideAlbum && [itemTypes.ALBUM, itemTypes.ARTIST].includes(contextType)}>
           <Table.Column emphasized={emphasize === itemTypes.ALBUM}>
             <Table.Cell>Album</Table.Cell>
             <Table.Cell>
@@ -98,18 +96,24 @@ const Track = ({
                   key={albumId}
                   id={albumId}
                   itemType={itemTypes.ALBUM}
-                  context={itemTypes.TRACK}
+                  context={trackContext}
                 />
               </strong>
             </Table.Cell>
           </Table.Column>
         </If>
-        <If condition={!hidePlaylist && context === itemTypes.PLAYLIST}>
+        <If condition={!hidePlaylist && contextType === itemTypes.PLAYLIST}>
           <Table.Column emphasized={emphasize === itemTypes.PLAYLIST}>
             <Table.Cell>Playlist</Table.Cell>
             <Table.Cell>
               <strong>
-                {playlistName}
+                <ItemButton
+                  name={contextItem.name}
+                  key={contextItem.id}
+                  id={contextItem.id}
+                  itemType={itemTypes.PLAYLIST}
+                  context={trackContext}
+                />
               </strong>
             </Table.Cell>
           </Table.Column>
@@ -129,13 +133,12 @@ const Track = ({
 };
 
 Track.propTypes = {
-  context: PropTypes.oneOf(Object.keys(itemTypes)).isRequired,
+  context: Context.isRequired,
   emphasize: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.oneOf(Object.keys(itemTypes)),
   ]),
   favourites: Favourites.isRequired,
-  game: Game.isRequired,
   hideAlbum: PropTypes.bool,
   hideArtists: PropTypes.bool,
   hideCover: PropTypes.bool,
@@ -153,7 +156,6 @@ Track.defaultProps = {
 
 export default compose(
   inject('favourites'),
-  inject('game'),
   waitForData('track.name'),
   observer,
 )(Track);

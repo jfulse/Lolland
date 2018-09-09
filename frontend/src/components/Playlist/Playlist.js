@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { compose } from 'recompose';
 import styled from 'styled-components';
+import moment from 'moment';
 
 import {
-  Background, Heart, If, Label, Panel, Player, Table,
+  Background, Heart, If, ItemButton, Label, Panel, Player, ScrollList, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
 import { Playlist as PlaylistType, Favourites } from '../../propTypes';
+import { intersperse } from '../../utils';
 
 const Image = styled.img`
   width: 100px;
@@ -24,42 +26,64 @@ const Playlist = ({
     unSetFavourite,
   },
   hideCover,
-  hideArtists,
+  hideTracks,
   emphasize,
 }) => {
   const {
-    name, images, tracks, uri,
+    name,
+    release_date: date,
+    images,
+    uri,
+    tracks,
   } = playlist;
-  const albumIsFavourite = isFavourite(itemTypes.PLAYLIST, playlist);
-  const onHeartClick = () => (albumIsFavourite
+  const year = moment(date).format('YYYY');
+  const playlistIsFavourite = isFavourite(itemTypes.PLAYLIST, playlist);
+  const onHeartClick = () => (playlistIsFavourite
     ? unSetFavourite(itemTypes.PLAYLIST, playlist)
     : setFavourite(itemTypes.PLAYLIST, playlist));
+  const context = { type: itemTypes.PLAYLIST, item: playlist };
+  const playlistTracks = tracks ? tracks.items.map(({ track }) => track) : [];
+  const trackList = playlistTracks.map(({ id, name: trackName }) => (
+    <ItemButton
+      name={trackName}
+      key={id}
+      id={id}
+      itemType={itemTypes.TRACK}
+      context={context}
+    />
+  ));
 
   return (
     <Panel width="800px">
-      <Heart outline={!albumIsFavourite} onClick={onHeartClick} />
+      <Heart outline={!playlistIsFavourite} onClick={onHeartClick} />
       <Player uri={uri} hasContext />
       <Table>
-        <Background image={images[0].url} />
+        <Background imageUrl={images[0].url} />
         <If condition={!hideCover}>
           <Table.Column>
             <Image src={images[0].url} alt="Playlist cover" />
-          </Table.Column>
-        </If>
-        <If condition={!hideArtists}>
-          <Table.Column emphasized={emphasize === itemTypes.ARTIST}>
-            <Table.Cell>Artists</Table.Cell>
-            <Table.Cell>
-              <strong>
-                {tracks.map(({ name: artistName }) => artistName).join(', ')}
-              </strong>
-            </Table.Cell>
           </Table.Column>
         </If>
         <Table.Column>
           <Table.Cell>Title</Table.Cell>
           <Table.Cell>
             <strong>{name}</strong>
+          </Table.Cell>
+        </Table.Column>
+        <If condition={!hideTracks && Boolean(playlistTracks.length)}>
+          <Table.Column emphasized={emphasize === itemTypes.ARTIST}>
+            <Table.Cell>{`Track${playlistTracks.length > 1 ? 's' : ''}`}</Table.Cell>
+            <Table.Cell>
+              <ScrollList bold>
+                {intersperse(trackList, ', ')}
+              </ScrollList>
+            </Table.Cell>
+          </Table.Column>
+        </If>
+        <Table.Column>
+          <Table.Cell>Year</Table.Cell>
+          <Table.Cell>
+            <strong>{year}</strong>
           </Table.Cell>
         </Table.Column>
       </Table>
@@ -74,7 +98,7 @@ Playlist.propTypes = {
   playlist: PlaylistType.isRequired,
   favourites: Favourites.isRequired,
   hideCover: PropTypes.bool,
-  hideArtists: PropTypes.bool,
+  hideTracks: PropTypes.bool,
   emphasize: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.oneOf(Object.keys(itemTypes)),
@@ -83,7 +107,7 @@ Playlist.propTypes = {
 
 Playlist.defaultProps = {
   hideCover: false,
-  hideArtists: false,
+  hideTracks: false,
   emphasize: false,
 };
 

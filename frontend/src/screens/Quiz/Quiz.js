@@ -59,7 +59,7 @@ class Quiz extends React.Component {
         currentGame: {
           correctAnswers,
           wrongAnswers,
-          state: { fromItem, showAnswer },
+          state: { fromItem, showAnswer, toItems },
           type: { from, to },
         },
       },
@@ -107,7 +107,7 @@ class Quiz extends React.Component {
               hidePlaylist={!showAnswer}
               hideCover={!showAnswer}
               emphasize={showAnswer && to}
-              context={to}
+              context={{ type: to, item: toItems[0] }}
             />
           </Switch.Case>
         </Switch>

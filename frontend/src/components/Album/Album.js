@@ -37,20 +37,23 @@ const Album = ({
     artists,
     uri,
     tracks,
+    album_type: type,
   } = album;
+  console.log('album', album);
   const year = moment(date).format('YYYY');
   const albumName = hideArtists ? strikeArtistsFromName(artists, name) : name;
   const albumIsFavourite = isFavourite(itemTypes.ALBUM, album);
   const onHeartClick = () => (albumIsFavourite
     ? unSetFavourite(itemTypes.ALBUM, album)
     : setFavourite(itemTypes.ALBUM, album));
+  const context = { type: itemTypes.ALBUM, item: album };
   const artistList = artists.map(({ id, name: artistName }) => (
     <ItemButton
       name={artistName}
       key={id}
       id={id}
       itemType={itemTypes.ARTIST}
-      context={itemTypes.ALBUM}
+      context={context}
     />
   ));
   const albumTracks = tracks ? tracks.items : [];
@@ -60,7 +63,7 @@ const Album = ({
       key={id}
       id={id}
       itemType={itemTypes.TRACK}
-      context={itemTypes.ALBUM}
+      context={context}
     />
   ));
 
@@ -109,7 +112,7 @@ const Album = ({
         </Table.Column>
       </Table>
       <Label>
-        ALBUM
+        {type.toUpperCase()}
       </Label>
     </Panel>
   );

@@ -8,7 +8,7 @@ import {
   Background, Heart, If, ItemButton, Label, Panel, Player, ScrollList, Table,
 } from '..';
 import { waitForData } from '../../enhancers';
-import { itemTypes } from '../../constants';
+import { albumTypes, itemTypes } from '../../constants';
 import { Artist as ArtistType, Favourites } from '../../propTypes';
 import { intersperse } from '../../utils';
 
@@ -16,6 +16,22 @@ const Image = styled.img`
   width: 100px;
   border: 1px solid black;
 `;
+
+const AlbumButton = ({ id, name, artist }) => (
+  <ItemButton
+    name={name}
+    key={id}
+    id={id}
+    itemType={itemTypes.ALBUM}
+    context={{ type: itemTypes.ARTIST, item: artist }}
+  />
+);
+
+AlbumButton.propTypes = {
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  artist: ArtistType.isRequired,
+};
 
 const Artist = ({
   artist,
@@ -27,21 +43,24 @@ const Artist = ({
   hideImage,
 }) => {
   const {
-    albums, name, images, uri,
+    albums: allAlbums, name, images, uri,
   } = artist;
   const albumIsFavourite = isFavourite(itemTypes.ARTIST, artist);
   const onHeartClick = () => (albumIsFavourite
     ? unSetFavourite(itemTypes.ARTIST, artist)
     : setFavourite(itemTypes.ARTIST, artist));
   const imageUrl = images.length && images[0].url ? images[0].url : null;
+  const albums = allAlbums.filter(({ album_type: type }) => type === albumTypes.album);
+  const compilations = allAlbums.filter(({ album_type: type }) => type === albumTypes.compilation);
+  const singles = allAlbums.filter(({ album_type: type }) => type === albumTypes.single);
   const albumList = albums.map(({ id, name: albumName }) => (
-    <ItemButton
-      name={albumName}
-      key={id}
-      id={id}
-      itemType={itemTypes.ALBUM}
-      context={itemTypes.ARTIST}
-    />
+    <AlbumButton key={id} id={id} name={albumName} artist={artist} />
+  ));
+  const compilationList = compilations.map(({ id, name: albumName }) => (
+    <AlbumButton key={id} id={id} name={albumName} artist={artist} />
+  ));
+  const singleList = singles.map(({ id, name: albumName }) => (
+    <AlbumButton key={id} id={id} name={albumName} artist={artist} />
   ));
 
   return (
@@ -61,14 +80,36 @@ const Artist = ({
             <strong>{name}</strong>
           </Table.Cell>
         </Table.Column>
-        <Table.Column>
-          <Table.Cell>Albums</Table.Cell>
-          <Table.Cell>
-            <ScrollList bold>
-              {intersperse(albumList, ', ')}
-            </ScrollList>
-          </Table.Cell>
-        </Table.Column>
+        <If condition={albums.length > 0}>
+          <Table.Column>
+            <Table.Cell>Albums</Table.Cell>
+            <Table.Cell>
+              <ScrollList bold>
+                {intersperse(albumList, ', ')}
+              </ScrollList>
+            </Table.Cell>
+          </Table.Column>
+        </If>
+        <If condition={singles.length > 0}>
+          <Table.Column>
+            <Table.Cell>Singles</Table.Cell>
+            <Table.Cell>
+              <ScrollList bold>
+                {intersperse(singleList, ', ')}
+              </ScrollList>
+            </Table.Cell>
+          </Table.Column>
+        </If>
+        <If condition={compilations.length > 0}>
+          <Table.Column>
+            <Table.Cell>Compilations</Table.Cell>
+            <Table.Cell>
+              <ScrollList bold>
+                {intersperse(compilationList, ', ')}
+              </ScrollList>
+            </Table.Cell>
+          </Table.Column>
+        </If>
       </Table>
       <Label>
         ARTIST

@@ -30,6 +30,7 @@ const defaultState = {
   answer: null,
   result: resultTypes.PENDING,
   fromItem: {},
+  toItems: [],
   showAnswer: false,
 };
 
@@ -87,6 +88,7 @@ class Game {
         runInAction(() => {
           this.currentGame.state.solutions = [formatAnswer(name)];
           this.currentGame.state.fromItem = track;
+          this.currentGame.state.toItems = [playlist];
         });
       } else {
         console.error('Can only guess playlist from track');
@@ -97,6 +99,7 @@ class Game {
         runInAction(() => {
           this.currentGame.state.solutions = album.artists.map(({ name }) => formatAnswer(name));
           this.currentGame.state.fromItem = album;
+          this.currentGame.state.toItems = album.artists;
         });
       } else {
         console.error('Game: guessing ', to, 'from album not implemented');
@@ -107,11 +110,13 @@ class Game {
         runInAction(() => {
           this.currentGame.state.solutions = track.artists.map(({ name }) => formatAnswer(name));
           this.currentGame.state.fromItem = track;
+          this.currentGame.state.toItems = track.artists;
         });
       } else if (to === itemTypes.ALBUM) {
         runInAction(() => {
           this.currentGame.state.solutions = [formatAnswer(track.album.name)];
           this.currentGame.state.fromItem = track;
+          this.currentGame.state.toItems = [track.album];
         });
       } else {
         console.error('Game: guessing ', to, 'from track not implemented');

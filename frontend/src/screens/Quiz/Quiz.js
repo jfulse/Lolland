@@ -4,7 +4,7 @@ import { compose } from 'recompose';
 import styled from 'styled-components';
 
 import {
-  Album, Playlist, Result, Submit, Switch, Track,
+  Album, Result, Submit, Switch, Track,
 } from '../../components';
 import { Game, Route } from '../../propTypes';
 import { itemTypes } from '../../constants';
@@ -59,7 +59,7 @@ class Quiz extends React.Component {
         currentGame: {
           correctAnswers,
           wrongAnswers,
-          settings: { autoplay },
+          settings: { autoplay, showAlbumBackground },
           state: { fromItem, showAnswer, toItems },
           type: { from, to },
         },
@@ -92,15 +92,7 @@ class Quiz extends React.Component {
               hideTracks={!showAnswer}
               emphasize={showAnswer && to}
               autoplay={autoplay}
-            />
-          </Switch.Case>
-          <Switch.Case caseName={itemTypes.PLAYLIST}>
-            <Playlist
-              playlist={fromItem}
-              hideArtists={!showAnswer}
-              hideCover={!showAnswer}
-              emphasize={showAnswer && to}
-              autoplay={autoplay}
+              showAlbumBackground={showAnswer || showAlbumBackground}
             />
           </Switch.Case>
           <Switch.Case caseName={itemTypes.TRACK}>
@@ -113,6 +105,7 @@ class Quiz extends React.Component {
               emphasize={showAnswer && to}
               context={{ type: to, item: toItems[0] }}
               autoplay={autoplay}
+              showAlbumBackground={showAnswer || showAlbumBackground}
             />
           </Switch.Case>
         </Switch>

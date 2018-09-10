@@ -16,8 +16,8 @@ const defaultBackground = `linear-gradient(
 );`;
 
 export default styled.div`
-  background-image: ${({ defaultImage, imageUrl }) => (defaultImage ? undefined : `url(${imageUrl})`)};
-  background: ${({ defaultImage }) => (defaultImage ? defaultBackground : undefined)};
+  background-image: ${({ imageUrl }) => (imageUrl ? `url(${imageUrl})` : undefined)};
+  background: ${({ imageUrl }) => (!imageUrl ? defaultBackground : undefined)};
   filter: blur(3px) opacity(0.6);
   background-position: center;
   top: auto;

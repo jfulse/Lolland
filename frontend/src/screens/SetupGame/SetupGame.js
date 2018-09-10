@@ -47,6 +47,10 @@ const StartButton = styled.button`
 const Settings = styled.div`
   display: flex;
   flex-direction: column;
+
+  label {
+    margin: 5px;
+  }
 `;
 
 const StyledInput = styled.input`

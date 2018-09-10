@@ -76,7 +76,7 @@ const Artist = ({
       <Heart outline={!albumIsFavourite} onClick={onHeartClick} />
       <Player uri={uri} hasContext autoplay={autoplay} />
       <Table>
-        <Background imageUrl={imageUrl} defaultImage={!imageUrl} />
+        <Background imageUrl={imageUrl} />
         <If condition={!hideImage && Boolean(imageUrl)}>
           <Table.Column>
             <Image src={imageUrl} alt="Artist image" />

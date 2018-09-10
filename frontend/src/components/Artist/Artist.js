@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { compose } from 'recompose';
 import styled from 'styled-components';
+import moment from 'moment';
 
 import {
   Background, Heart, If, ItemButton, Label, Panel, Player, ScrollList, Table,
@@ -33,6 +34,11 @@ AlbumButton.propTypes = {
   artist: ArtistType.isRequired,
 };
 
+const sortByDate = albums => albums.sort((
+  { release_date: date1 },
+  { release_date: date2 },
+) => moment(date2) - moment(date1));
+
 const Artist = ({
   artist,
   favourites: {
@@ -41,6 +47,7 @@ const Artist = ({
     unSetFavourite,
   },
   hideImage,
+  autoplay,
 }) => {
   const {
     albums: allAlbums, name, images, uri,
@@ -53,20 +60,21 @@ const Artist = ({
   const albums = allAlbums.filter(({ album_type: type }) => type === albumTypes.album);
   const compilations = allAlbums.filter(({ album_type: type }) => type === albumTypes.compilation);
   const singles = allAlbums.filter(({ album_type: type }) => type === albumTypes.single);
-  const albumList = albums.map(({ id, name: albumName }) => (
+
+  const albumList = sortByDate(albums).map(({ id, name: albumName }) => (
     <AlbumButton key={id} id={id} name={albumName} artist={artist} />
   ));
-  const compilationList = compilations.map(({ id, name: albumName }) => (
+  const compilationList = sortByDate(compilations).map(({ id, name: albumName }) => (
     <AlbumButton key={id} id={id} name={albumName} artist={artist} />
   ));
-  const singleList = singles.map(({ id, name: albumName }) => (
+  const singleList = sortByDate(singles).map(({ id, name: albumName }) => (
     <AlbumButton key={id} id={id} name={albumName} artist={artist} />
   ));
 
   return (
     <Panel width="800px">
       <Heart outline={!albumIsFavourite} onClick={onHeartClick} />
-      <Player uri={uri} hasContext />
+      <Player uri={uri} hasContext autoplay={autoplay} />
       <Table>
         <Background imageUrl={imageUrl} defaultImage={!imageUrl} />
         <If condition={!hideImage && Boolean(imageUrl)}>
@@ -122,10 +130,12 @@ Artist.propTypes = {
   artist: ArtistType.isRequired,
   favourites: Favourites.isRequired,
   hideImage: PropTypes.bool,
+  autoplay: PropTypes.bool,
 };
 
 Artist.defaultProps = {
   hideImage: false,
+  autoplay: false,
 };
 
 export default compose(

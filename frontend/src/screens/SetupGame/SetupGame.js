@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { compose, withHandlers, withState } from 'recompose';
+import { compose, withHandlers } from 'recompose';
 import styled from 'styled-components';
 
 import { Choose } from '../../components';
@@ -46,6 +46,7 @@ const StartButton = styled.button`
 
 const Settings = styled.div`
   display: flex;
+  flex-direction: column;
 `;
 
 const StyledInput = styled.input`
@@ -64,68 +65,50 @@ const SetupGame = ({
       type: { from, to },
     },
   },
-  selectedFrom,
-  setSelectedFrom,
-  selectedTo,
-  setSelectedTo,
   route: { push },
   setAutoplay,
+  setShowAlbumBackground,
 }) => (
   <Wrapper>
     <SettingsWrapper>
-      <Choose selectedId={selectedTo}>
+      <Choose selectedId={to || ''}>
         <h2>What to guess:</h2>
         <Choose.Alternative
-          onClick={() => {
-            setTypeTo(itemTypes.ARTIST);
-            setSelectedTo('to-artist');
-          }}
+          onClick={() => setTypeTo(itemTypes.ARTIST)}
           role="button"
           label="Artist"
           disabled={[itemTypes.ARTIST, itemTypes.PLAYLIST].indexOf(from) > -1}
-          id="to-artist"
+          id={itemTypes.ARTIST}
         />
         <Choose.Alternative
-          onClick={() => {
-            setTypeTo(itemTypes.ALBUM);
-            setSelectedTo('to-album');
-          }}
+          onClick={() => setTypeTo(itemTypes.ALBUM)}
           role="button"
           label="Album"
           disabled={from && from !== itemTypes.TRACK}
-          id="to-album"
+          id={itemTypes.ALBUM}
         />
         <Choose.Alternative
-          onClick={() => {
-            setTypeTo(itemTypes.PLAYLIST);
-            setSelectedTo('to-playlist');
-          }}
+          onClick={() => setTypeTo(itemTypes.PLAYLIST)}
           role="button"
           label="Playlist"
           disabled={from && from !== itemTypes.TRACK}
-          id="to-playlist"
+          id={itemTypes.PLAYLIST}
         />
       </Choose>
-      <Choose selectedId={selectedFrom}>
+      <Choose selectedId={from || ''}>
         <h2>How to guess it:</h2>
         <Choose.Alternative
-          onClick={() => {
-            setTypeFrom(itemTypes.ALBUM);
-            setSelectedFrom('from-album');
-          }}
+          onClick={() => setTypeFrom(itemTypes.ALBUM)}
           role="button"
           label="From album"
           disabled={to && to !== itemTypes.ARTIST}
-          id="from-album"
+          id={itemTypes.ALBUM}
         />
         <Choose.Alternative
-          onClick={() => {
-            setTypeFrom(itemTypes.TRACK);
-            setSelectedFrom('from-track');
-          }}
+          onClick={() => setTypeFrom(itemTypes.TRACK)}
           role="button"
           label="From track"
-          id="from-track"
+          id={itemTypes.TRACK}
         />
       </Choose>
       <Settings>
@@ -138,11 +121,20 @@ const SetupGame = ({
           />
           autoplay music
         </label>
+        <label htmlFor="checkbox-show-album-background">
+          <StyledInput
+            type="checkbox"
+            id="checkbox-show-album-background"
+            checked={settings.showAlbumBackground}
+            onChange={e => setShowAlbumBackground(e.target.checked)}
+          />
+          show album background
+        </label>
       </Settings>
     </SettingsWrapper>
     <StartButton
       disabled={from == null || to == null}
-      onClick={() => push(`/quiz?${JSON.stringify(settings)}`)}
+      onClick={() => push('/quiz')}
     >
       Start
     </StartButton>
@@ -152,23 +144,34 @@ const SetupGame = ({
 SetupGame.propTypes = {
   game: Game.isRequired,
   route: Route.isRequired,
-  selectedFrom: PropTypes.string.isRequired,
-  setSelectedFrom: PropTypes.func.isRequired,
-  selectedTo: PropTypes.string.isRequired,
-  setSelectedTo: PropTypes.func.isRequired,
   setAutoplay: PropTypes.func.isRequired,
+  setShowAlbumBackground: PropTypes.func.isRequired,
 };
+
+const withSettingsHandlers = withHandlers({
+  setAutoplay: ({
+    game: {
+      setSettings,
+      currentGame: { settings },
+    },
+  }) => checked => setSettings({
+    ...settings,
+    autoplay: checked,
+  }),
+  setShowAlbumBackground: ({
+    game: {
+      setSettings,
+      currentGame: { settings },
+    },
+  }) => checked => setSettings({
+    ...settings,
+    showAlbumBackground: checked,
+  }),
+});
 
 export default compose(
   inject('game'),
   inject('route'),
-  withState('selectedFrom', 'setSelectedFrom', ''),
-  withState('selectedTo', 'setSelectedTo', ''),
-  withHandlers({
-    setAutoplay: ({ game: { setSettings, currentGame: { settings } } }) => checked => setSettings({
-      ...settings,
-      autoplay: checked,
-    }),
-  }),
+  withSettingsHandlers,
   observer,
 )(SetupGame);

@@ -72,7 +72,10 @@ const Choose = ({ children, selectedId }) => (
 
 Choose.propTypes = {
   children: Children.isRequired,
-  selectedId: PropTypes.string.isRequired,
+  selectedId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.bool,
+  ]).isRequired,
 };
 
 export default setStatic('Alternative', Alternative)(Choose);

@@ -28,6 +28,7 @@ const Playlist = ({
   hideCover,
   hideTracks,
   emphasize,
+  autoplay,
 }) => {
   const {
     name,
@@ -56,7 +57,7 @@ const Playlist = ({
   return (
     <Panel width="800px">
       <Heart outline={!playlistIsFavourite} onClick={onHeartClick} />
-      <Player uri={uri} hasContext />
+      <Player uri={uri} hasContext autoplay={autoplay} />
       <Table>
         <Background imageUrl={images[0].url} />
         <If condition={!hideCover}>
@@ -99,6 +100,7 @@ Playlist.propTypes = {
   favourites: Favourites.isRequired,
   hideCover: PropTypes.bool,
   hideTracks: PropTypes.bool,
+  autoplay: PropTypes.bool,
   emphasize: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.oneOf(Object.keys(itemTypes)),
@@ -109,6 +111,7 @@ Playlist.defaultProps = {
   hideCover: false,
   hideTracks: false,
   emphasize: false,
+  autoplay: false,
 };
 
 export default compose(

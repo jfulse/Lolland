@@ -41,7 +41,7 @@ const defaultGame = {
   wrongAnswers: 0,
   state: defaultState,
   history: [],
-  settings: { autoplay: false },
+  settings: { autoplay: false, showAlbumBackground: true },
 };
 
 class Game {

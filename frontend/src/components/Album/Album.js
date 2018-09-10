@@ -95,7 +95,7 @@ const Album = ({
           </Table.Column>
         </If>
         <If condition={!hideTracks && Boolean(albumTracks.length)}>
-          <Table.Column emphasized={emphasize === itemTypes.ARTIST}>
+          <Table.Column>
             <Table.Cell>{`Track${albumTracks.length > 1 ? 's' : ''}`}</Table.Cell>
             <Table.Cell>
               <ScrollList bold>
@@ -124,11 +124,11 @@ Album.propTypes = {
   hideCover: PropTypes.bool,
   hideArtists: PropTypes.bool,
   hideTracks: PropTypes.bool,
+  autoplay: PropTypes.bool,
   emphasize: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.oneOf(Object.keys(itemTypes)),
   ]),
-  autoplay: PropTypes.bool,
 };
 
 Album.defaultProps = {

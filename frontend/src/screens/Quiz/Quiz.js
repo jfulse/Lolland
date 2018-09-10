@@ -89,6 +89,7 @@ class Quiz extends React.Component {
               album={fromItem}
               hideArtists={!showAnswer}
               hideCover={!showAnswer}
+              hideTracks={!showAnswer}
               emphasize={showAnswer && to}
               autoplay={autoplay}
             />

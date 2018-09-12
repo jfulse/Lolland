@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Pause } from '..';
-import { waitForModels } from '../../enhancers';
-import { Model } from '../../propTypes';
+import { waitForData } from '../../enhancers';
+import { User } from '../../propTypes';
 
 const StyledHeader = styled.h1`
   font-size: 24px;
@@ -32,23 +32,23 @@ const StyledLink = styled(Link)`
 const HomeButton = () => <StyledLink to="/">Home</StyledLink>;
 const FavouritesButton = () => <StyledLink to="/favourites">Favourites</StyledLink>;
 
-const Header = ({ user }) => (
+const Header = ({ user: { profile } }) => (
   <StyledHeader>
     <LeftWrapper>
       <HomeButton />
       <Pause />
     </LeftWrapper>
-    {user.get('id')}
+    {profile.id}
     <FavouritesButton />
   </StyledHeader>
 );
 
 Header.propTypes = {
-  user: Model.isRequired,
+  user: User.isRequired,
 };
 
 export default compose(
   inject('user'),
-  waitForModels('user.id'),
+  waitForData('user.profile'),
   observer,
 )(Header);

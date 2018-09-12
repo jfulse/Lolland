@@ -43,7 +43,7 @@ const Playlist = ({
     ? unSetFavourite(itemTypes.PLAYLIST, playlist)
     : setFavourite(itemTypes.PLAYLIST, playlist));
   const context = { type: itemTypes.PLAYLIST, item: playlist };
-  const playlistTracks = tracks ? tracks.items.map(({ track }) => track) : [];
+  const playlistTracks = tracks ? tracks.map(({ track }) => track) : [];
   const trackList = playlistTracks.map(({ id, name: trackName }) => (
     <ItemButton
       name={trackName}

@@ -1,8 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { configure, runInAction } from 'mobx';
-import { apiClient } from 'mobx-rest';
-import createAdapter from 'mobx-rest-axios-adapter';
 import localStorage from 'mobx-localstorage';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import axios from 'axios';
@@ -66,18 +64,8 @@ const initialise = lifecycle({
       runInAction(() => localStorage.setItem(STORAGE_REFRESH_TOKEN, hashRefreshToken));
       setToken(token);
 
-      const axiosAdapter = createAdapter(axios);
-      apiClient(axiosAdapter, {
-        apiPath: spotifyUrl,
-        commonOptions: {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      });
-
       try {
-        await user.fetch();
+        await user.get();
       } catch ({ error }) {
         if (error && error.status && error.status === 401) {
           const currentRefreshToken = refreshToken || localStorage.getItem(STORAGE_REFRESH_TOKEN);

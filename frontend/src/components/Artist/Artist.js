@@ -52,8 +52,8 @@ const Artist = ({
   const {
     albums: allAlbums, name, images, uri,
   } = artist;
-  const albumIsFavourite = isFavourite(itemTypes.ARTIST, artist);
-  const onHeartClick = () => (albumIsFavourite
+  const artistIsFavourite = isFavourite(itemTypes.ARTIST, artist);
+  const onHeartClick = () => (artistIsFavourite
     ? unSetFavourite(itemTypes.ARTIST, artist)
     : setFavourite(itemTypes.ARTIST, artist));
   const imageUrl = images.length && images[0].url ? images[0].url : null;
@@ -73,7 +73,7 @@ const Artist = ({
 
   return (
     <Panel width="800px">
-      <Heart outline={!albumIsFavourite} onClick={onHeartClick} />
+      <Heart outline={!artistIsFavourite} onClick={onHeartClick} />
       <Player uri={uri} hasContext autoplay={autoplay} />
       <Table>
         <Background imageUrl={imageUrl} />

@@ -27,8 +27,8 @@ const favourites = new Favourites();
 const player = new Player(auth, SPOTIFY_API_URL);
 const popups = new Popups();
 const route = new RouterStore();
-const game = new Game(auth, albums, tracks, playlists);
-const user = new User();
+const game = new Game(albums, tracks, playlists);
+const user = new User(auth, SPOTIFY_API_URL);
 
 const stores = {
   albums,

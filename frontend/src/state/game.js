@@ -16,6 +16,12 @@ const defaultState = {
   showAnswer: false,
 };
 
+const defaultSettings = {
+  autoplay: false,
+  showAlbumBackground: true,
+  rounds: 5,
+};
+
 const defaultGame = {
   category: categoryTypes.QUIZ,
   type: { from: null, to: null },
@@ -23,11 +29,12 @@ const defaultGame = {
   wrongAnswers: 0,
   state: defaultState,
   history: [],
-  settings: { autoplay: false, showAlbumBackground: true },
+  settings: defaultSettings,
+  round: 1,
 };
 
 class Game {
-  constructor(albums, tracks, playlists) {
+  constructor(albums, tracks, playlists, route) {
     runInAction(() => {
       this.currentGame = defaultGame;
       this.pastGames = [];
@@ -36,6 +43,7 @@ class Game {
     this.albums = albums;
     this.tracks = tracks;
     this.playlists = playlists;
+    this.route = route;
 
     this.setTypeFrom = this.setTypeFrom.bind(this);
     this.setTypeTo = this.setTypeTo.bind(this);
@@ -135,8 +143,14 @@ class Game {
       currentGame.correctAnswers += 1;
     }
 
+    currentGame.round += 1;
     currentGame.state = defaultState;
-    getRandomFrom();
+
+    if (currentGame.round > currentGame.settings.rounds) {
+      this.route.push('/result');
+    } else {
+      getRandomFrom();
+    }
   }
 }
 

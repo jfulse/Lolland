@@ -23,10 +23,6 @@ const Header = styled.h3`
   width: 100%;
 `;
 
-const InvisibleSpan = styled.span`
-  opacity: 0;
-`;
-
 class Quiz extends React.Component {
   async componentDidMount() {
     const {
@@ -59,7 +55,8 @@ class Quiz extends React.Component {
         currentGame: {
           correctAnswers,
           wrongAnswers,
-          settings: { autoplay, showAlbumBackground },
+          round,
+          settings: { autoplay, showAlbumBackground, rounds },
           state: { fromItem, showAnswer, toItems },
           type: { from, to },
         },
@@ -68,9 +65,13 @@ class Quiz extends React.Component {
     return (
       <Wrapper>
         <Header>
-          <InvisibleSpan>
-            {'x'.repeat(12)}
-          </InvisibleSpan>
+          <span>
+            Round
+            {' '}
+            {round}
+            {' / '}
+            {rounds}
+          </span>
           <span>
             Guess the
             {' '}

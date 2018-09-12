@@ -13,6 +13,12 @@ const GameState = PropTypes.shape({
   showAnswer: PropTypes.bool.isRequired,
 });
 
+const GameSettings = PropTypes.shape({
+  autoplay: PropTypes.bool.isRequired,
+  showAlbumBackground: PropTypes.bool.isRequired,
+  rounds: PropTypes.number.isRequired,
+});
+
 const CurrentGame = PropTypes.shape({
   category: PropTypes.oneOf(Object.keys(categoryTypes)).isRequired,
   type: PropTypes.shape({
@@ -23,9 +29,8 @@ const CurrentGame = PropTypes.shape({
   wrongAnswers: PropTypes.number.isRequired,
   state: GameState.isRequired,
   history: PropTypes.arrayOf(GameState).isRequired,
-  settings: PropTypes.shape({
-    autoplay: PropTypes.bool,
-  }).isRequired,
+  settings: GameSettings.isRequired,
+  round: PropTypes.number.isRequired,
 });
 
 export default PropTypes.shape({

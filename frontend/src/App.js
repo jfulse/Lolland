@@ -8,7 +8,7 @@ import { compose, lifecycle } from 'recompose';
 import queryString from 'query-string';
 
 import {
-  FavouritePage, Landing, Quiz, Popup, SetupGame,
+  FavouritePage, Landing, Quiz, Popup, ResultPage, SetupGame,
 } from './screens';
 import { Header } from './components';
 import initPlayer from './initPlayer';
@@ -29,6 +29,7 @@ const App = () => (
       <Route path="/setup" component={SetupGame} />
       <Route path="/quiz" component={Quiz} />
       <Route path="/favourites" component={FavouritePage} />
+      <Route path="/result" component={ResultPage} />
     </Switch>
     <Popup />
   </div>

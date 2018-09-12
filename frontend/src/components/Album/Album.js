@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { inject, observer } from 'mobx-react';
-import { compose } from 'recompose';
 import styled from 'styled-components';
 import moment from 'moment';
 
@@ -10,7 +8,7 @@ import {
 } from '..';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
-import { Album as AlbumType, Favourites } from '../../propTypes';
+import { Album as AlbumType } from '../../propTypes';
 import { intersperse, strikeArtistsFromName } from '../../utils';
 
 const Image = styled.img`
@@ -20,11 +18,6 @@ const Image = styled.img`
 
 const Album = ({
   album,
-  favourites: {
-    isFavourite,
-    setFavourite,
-    unSetFavourite,
-  },
   hideCover,
   hideArtists,
   hideTracks,
@@ -43,10 +36,6 @@ const Album = ({
   } = album;
   const year = moment(date).format('YYYY');
   const albumName = hideArtists ? strikeArtistsFromName(artists, name) : name;
-  const albumIsFavourite = isFavourite(itemTypes.ALBUM, album);
-  const onHeartClick = () => (albumIsFavourite
-    ? unSetFavourite(itemTypes.ALBUM, album)
-    : setFavourite(itemTypes.ALBUM, album));
   const context = { type: itemTypes.ALBUM, item: album };
   const artistList = artists.map(({ id, name: artistName }) => (
     <ItemButton
@@ -70,7 +59,7 @@ const Album = ({
 
   return (
     <Panel width="800px">
-      <Heart outline={!albumIsFavourite} onClick={onHeartClick} />
+      <Heart itemType={itemTypes.ALBUM} item={album} />
       <Player uri={uri} hasContext autoplay={autoplay} />
       <Table>
         <Background imageUrl={showAlbumBackground && images[0].url} />
@@ -121,7 +110,6 @@ const Album = ({
 
 Album.propTypes = {
   album: AlbumType.isRequired,
-  favourites: Favourites.isRequired,
   hideCover: PropTypes.bool,
   hideArtists: PropTypes.bool,
   hideTracks: PropTypes.bool,
@@ -142,8 +130,4 @@ Album.defaultProps = {
   showAlbumBackground: true,
 };
 
-export default compose(
-  inject('favourites'),
-  waitForData('album.name'),
-  observer,
-)(Album);
+export default waitForData('album.name')(Album);

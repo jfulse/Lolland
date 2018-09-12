@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { inject, observer } from 'mobx-react';
-import { compose } from 'recompose';
 import styled from 'styled-components';
 import moment from 'moment';
 
@@ -10,7 +8,7 @@ import {
 } from '..';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
-import { Playlist as PlaylistType, Favourites } from '../../propTypes';
+import { Playlist as PlaylistType } from '../../propTypes';
 import { intersperse } from '../../utils';
 
 const Image = styled.img`
@@ -20,11 +18,6 @@ const Image = styled.img`
 
 const Playlist = ({
   playlist,
-  favourites: {
-    isFavourite,
-    setFavourite,
-    unSetFavourite,
-  },
   hideCover,
   hideTracks,
   emphasize,
@@ -38,10 +31,6 @@ const Playlist = ({
     tracks,
   } = playlist;
   const year = moment(date).format('YYYY');
-  const playlistIsFavourite = isFavourite(itemTypes.PLAYLIST, playlist);
-  const onHeartClick = () => (playlistIsFavourite
-    ? unSetFavourite(itemTypes.PLAYLIST, playlist)
-    : setFavourite(itemTypes.PLAYLIST, playlist));
   const context = { type: itemTypes.PLAYLIST, item: playlist };
   const playlistTracks = tracks ? tracks.map(({ track }) => track) : [];
   const trackList = playlistTracks.map(({ id, name: trackName }) => (
@@ -56,7 +45,7 @@ const Playlist = ({
 
   return (
     <Panel width="800px">
-      <Heart outline={!playlistIsFavourite} onClick={onHeartClick} />
+      <Heart itemType={itemTypes.PLAYLIST} item={playlist} />
       <Player uri={uri} hasContext autoplay={autoplay} />
       <Table>
         <Background imageUrl={images[0].url} />
@@ -97,7 +86,6 @@ const Playlist = ({
 
 Playlist.propTypes = {
   playlist: PlaylistType.isRequired,
-  favourites: Favourites.isRequired,
   hideCover: PropTypes.bool,
   hideTracks: PropTypes.bool,
   autoplay: PropTypes.bool,
@@ -114,8 +102,4 @@ Playlist.defaultProps = {
   autoplay: false,
 };
 
-export default compose(
-  inject('favourites'),
-  waitForData('playlist.name'),
-  observer,
-)(Playlist);
+export default waitForData('playlist.name')(Playlist);

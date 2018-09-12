@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { inject, observer } from 'mobx-react';
-import { compose } from 'recompose';
 import styled from 'styled-components';
 import moment from 'moment';
 
@@ -10,7 +8,7 @@ import {
 } from '..';
 import { waitForData } from '../../enhancers';
 import { albumTypes, itemTypes } from '../../constants';
-import { Artist as ArtistType, Favourites } from '../../propTypes';
+import { Artist as ArtistType } from '../../propTypes';
 import { intersperse } from '../../utils';
 
 const Image = styled.img`
@@ -41,21 +39,12 @@ const sortByDate = albums => albums.sort((
 
 const Artist = ({
   artist,
-  favourites: {
-    isFavourite,
-    setFavourite,
-    unSetFavourite,
-  },
   hideImage,
   autoplay,
 }) => {
   const {
     albums: allAlbums, name, images, uri,
   } = artist;
-  const artistIsFavourite = isFavourite(itemTypes.ARTIST, artist);
-  const onHeartClick = () => (artistIsFavourite
-    ? unSetFavourite(itemTypes.ARTIST, artist)
-    : setFavourite(itemTypes.ARTIST, artist));
   const imageUrl = images.length && images[0].url ? images[0].url : null;
   const albums = allAlbums.filter(({ album_type: type }) => type === albumTypes.album);
   const compilations = allAlbums.filter(({ album_type: type }) => type === albumTypes.compilation);
@@ -73,7 +62,7 @@ const Artist = ({
 
   return (
     <Panel width="800px">
-      <Heart outline={!artistIsFavourite} onClick={onHeartClick} />
+      <Heart itemType={itemTypes.ARTIST} item={artist} />
       <Player uri={uri} hasContext autoplay={autoplay} />
       <Table>
         <Background imageUrl={imageUrl} />
@@ -128,7 +117,6 @@ const Artist = ({
 
 Artist.propTypes = {
   artist: ArtistType.isRequired,
-  favourites: Favourites.isRequired,
   hideImage: PropTypes.bool,
   autoplay: PropTypes.bool,
 };
@@ -138,8 +126,4 @@ Artist.defaultProps = {
   autoplay: false,
 };
 
-export default compose(
-  inject('favourites'),
-  waitForData('artist.name'),
-  observer,
-)(Artist);
+export default waitForData('artist.name')(Artist);

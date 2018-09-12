@@ -65,7 +65,6 @@ class Favourites {
   }
 
   setFavourite(itemType, item) {
-    console.log('setFavourite', item, itemType);
     const itemList = this.getItems(itemType);
     itemList.push(item);
     this.persist(itemType);

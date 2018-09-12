@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { inject, observer } from 'mobx-react';
-import { compose } from 'recompose';
 import styled from 'styled-components';
 import moment from 'moment';
 
@@ -10,9 +8,7 @@ import {
 } from '..';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
-import {
-  Context, Favourites, Track as TrackType,
-} from '../../propTypes';
+import { Context, Track as TrackType } from '../../propTypes';
 import { intersperse, strikeArtistsFromName } from '../../utils';
 
 const Image = styled.img`
@@ -30,11 +26,6 @@ const Track = ({
   autoplay,
   showAlbumBackground,
   context: { type: contextType, item: contextItem },
-  favourites: {
-    isFavourite,
-    setFavourite,
-    unSetFavourite,
-  },
 }) => {
   const {
     name,
@@ -46,10 +37,6 @@ const Track = ({
   } = album;
   const year = moment(date).format('YYYY');
   const trackName = hideArtists ? strikeArtistsFromName(artists, name) : name;
-  const trackIsFavourite = isFavourite(itemTypes.TRACK, track);
-  const onHeartClick = () => (trackIsFavourite
-    ? unSetFavourite(itemTypes.TRACK, track)
-    : setFavourite(itemTypes.TRACK, track));
   const trackContext = { type: itemTypes.TRACK, item: track };
   const artistList = artists.map(({ id, name: artistName }) => (
     <ItemButton
@@ -63,7 +50,7 @@ const Track = ({
 
   return (
     <Panel width="800px">
-      <Heart outline={!trackIsFavourite} onClick={onHeartClick} />
+      <Heart itemType={itemTypes.TRACK} item={track} />
       <Player uri={uri} hasContext={false} autoplay={autoplay} />
       <Table>
         <Background imageUrl={showAlbumBackground && images[0].url} />
@@ -140,7 +127,6 @@ Track.propTypes = {
     PropTypes.bool,
     PropTypes.oneOf(Object.keys(itemTypes)),
   ]),
-  favourites: Favourites.isRequired,
   hideAlbum: PropTypes.bool,
   hideArtists: PropTypes.bool,
   hideCover: PropTypes.bool,
@@ -160,8 +146,4 @@ Track.defaultProps = {
   showAlbumBackground: true,
 };
 
-export default compose(
-  inject('favourites'),
-  waitForData('track.name'),
-  observer,
-)(Track);
+export default waitForData('track.name')(Track);

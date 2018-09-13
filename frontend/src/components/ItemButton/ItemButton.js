@@ -12,7 +12,7 @@ const StyledButton = styled.div`
   display: inline;
   &:hover {
     cursor: pointer;
-    filter: brightness(85%);
+    filter: ${({ dark }) => (dark ? 'opacity(50%)' : 'brightness(85%)')}};
   }
 `;
 
@@ -21,6 +21,7 @@ const ItemButton = ({
   id,
   name,
   playlist,
+  dark,
   albums: { get: getAlbum },
   artists: { get: getArtist },
   playlists: { get: getPlaylist },
@@ -51,6 +52,7 @@ const ItemButton = ({
   return (
     <StyledButton
       type="button"
+      dark={dark}
       onClick={async () => {
         const item = await get(id);
         const popupProps = { [key]: item };
@@ -72,6 +74,7 @@ ItemButton.propTypes = {
     PropTypes.bool,
     Playlist,
   ]),
+  dark: PropTypes.bool,
   popups: Popups.isRequired,
   albums: Collection.isRequired,
   artists: Collection.isRequired,
@@ -81,6 +84,7 @@ ItemButton.propTypes = {
 
 ItemButton.defaultProps = {
   playlist: false,
+  dark: false,
 };
 
 export default compose(

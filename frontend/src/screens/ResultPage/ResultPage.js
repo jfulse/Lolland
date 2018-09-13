@@ -61,6 +61,10 @@ const Answer = styled.span`
   margin: 5px;
 `;
 
+const Item = styled.span`
+  margin: 5px;
+`;
+
 const ResultPage = ({
   game: {
     currentGame: {
@@ -90,11 +94,11 @@ const ResultPage = ({
         <h4>Rounds:</h4>
         <HistoryBoard>
           <HistoryColumn>
-            <h5>Clue</h5>
+            <h5>Clues</h5>
             {history.map(({
               result, fromItem, toItems,
             }) => (
-              <Answer
+              <Item
                 result={result}
                 key={`clue-${fromItem.id}-${toItems[0].id}`}
               >
@@ -103,8 +107,9 @@ const ResultPage = ({
                   id={fromItem.id}
                   name={fromItem.name}
                   playlist={to === itemTypes.PLAYLIST && toItems[0]}
+                  dark
                 />
-              </Answer>
+              </Item>
             ))}
           </HistoryColumn>
           <HistoryColumn>
@@ -124,13 +129,21 @@ const ResultPage = ({
           <HistoryColumn>
             <h5>Solutions</h5>
             {history.map(({
-              solutions, fromItem: { id: fromId }, toItems: [{ id: toId }],
+              fromItem: { id: fromId }, toItems,
             }) => (
-              <Answer
-                key={`solution-${fromId}-${toId}`}
+              <Item
+                key={`solutions-list-${fromId}`}
               >
-                {solutions.join(', ')}
-              </Answer>
+                {toItems.map(({ id, name }) => (
+                  <ItemButton
+                    itemType={to}
+                    id={id}
+                    key={`solution-${id}`}
+                    name={name}
+                    dark
+                  />
+                ))}
+              </Item>
             ))}
           </HistoryColumn>
         </HistoryBoard>

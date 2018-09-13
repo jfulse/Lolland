@@ -65,7 +65,7 @@ ItemButton.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   itemType: PropTypes.oneOf(Object.keys(itemTypes)).isRequired,
-  context: Context.isRequired,
+  context: PropTypes.oneOfType([PropTypes.bool, Context]).isRequired,
   popups: Popups.isRequired,
   albums: Collection.isRequired,
   artists: Collection.isRequired,

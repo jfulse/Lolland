@@ -144,6 +144,7 @@ class Game {
     }
 
     currentGame.round += 1;
+    currentGame.history.push(currentGame.state);
     currentGame.state = defaultState;
 
     if (currentGame.round > currentGame.settings.rounds) {

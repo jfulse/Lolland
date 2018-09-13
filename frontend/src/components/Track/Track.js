@@ -8,7 +8,7 @@ import {
 } from '..';
 import { waitForData } from '../../enhancers';
 import { itemTypes } from '../../constants';
-import { Context, Track as TrackType } from '../../propTypes';
+import { Playlist, Track as TrackType } from '../../propTypes';
 import { intersperse, strikeArtistsFromName } from '../../utils';
 
 const Image = styled.img`
@@ -25,7 +25,7 @@ const Track = ({
   emphasize,
   autoplay,
   showAlbumBackground,
-  context: { type: contextType, item: contextItem },
+  playlist,
 }) => {
   const {
     name,
@@ -37,14 +37,12 @@ const Track = ({
   } = album;
   const year = moment(date).format('YYYY');
   const trackName = hideArtists ? strikeArtistsFromName(artists, name) : name;
-  const trackContext = { type: itemTypes.TRACK, item: track };
   const artistList = artists.map(({ id, name: artistName }) => (
     <ItemButton
       name={artistName}
       key={id}
       id={id}
       itemType={itemTypes.ARTIST}
-      context={trackContext}
     />
   ));
 
@@ -75,7 +73,7 @@ const Track = ({
             </Table.Cell>
           </Table.Column>
         </If>
-        <If condition={!hideAlbum && [itemTypes.ALBUM, itemTypes.ARTIST].includes(contextType)}>
+        <If condition={!hideAlbum && !playlist}>
           <Table.Column emphasized={emphasize === itemTypes.ALBUM}>
             <Table.Cell>Album</Table.Cell>
             <Table.Cell>
@@ -85,23 +83,21 @@ const Track = ({
                   key={albumId}
                   id={albumId}
                   itemType={itemTypes.ALBUM}
-                  context={trackContext}
                 />
               </strong>
             </Table.Cell>
           </Table.Column>
         </If>
-        <If condition={!hidePlaylist && contextType === itemTypes.PLAYLIST}>
+        <If condition={!hidePlaylist && Boolean(playlist)}>
           <Table.Column emphasized={emphasize === itemTypes.PLAYLIST}>
             <Table.Cell>Playlist</Table.Cell>
             <Table.Cell>
               <strong>
                 <ItemButton
-                  name={contextItem.name}
-                  key={contextItem.id}
-                  id={contextItem.id}
+                  name={playlist && playlist.name}
+                  key={playlist && playlist.id}
+                  id={playlist && playlist.id}
                   itemType={itemTypes.PLAYLIST}
-                  context={trackContext}
                 />
               </strong>
             </Table.Cell>
@@ -122,7 +118,6 @@ const Track = ({
 };
 
 Track.propTypes = {
-  context: Context.isRequired,
   emphasize: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.oneOf(Object.keys(itemTypes)),
@@ -134,9 +129,14 @@ Track.propTypes = {
   autoplay: PropTypes.bool,
   showAlbumBackground: PropTypes.bool,
   track: TrackType.isRequired,
+  playlist: PropTypes.oneOfType([
+    PropTypes.bool,
+    Playlist,
+  ]),
 };
 
 Track.defaultProps = {
+  playlist: false,
   hideCover: false,
   hideArtists: false,
   hideAlbum: false,

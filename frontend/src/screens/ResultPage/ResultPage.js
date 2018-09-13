@@ -61,11 +61,6 @@ const Answer = styled.span`
   margin: 5px;
 `;
 
-const getContext = (type, item) => {
-  if (type === itemTypes.TRACK) return false;
-  return { type, item };
-};
-
 const ResultPage = ({
   game: {
     currentGame: {
@@ -78,7 +73,7 @@ const ResultPage = ({
       },
     },
   },
-}) => console.log('history', history) || (
+}) => (
   <ResultWrapper>
     <Header>
       Results:
@@ -97,17 +92,17 @@ const ResultPage = ({
           <HistoryColumn>
             <h5>Clue</h5>
             {history.map(({
-              result, fromItem, toItems: [{ id: toId }],
+              result, fromItem, toItems,
             }) => (
               <Answer
                 result={result}
-                key={`clue-${fromItem.id}-${toId}`}
+                key={`clue-${fromItem.id}-${toItems[0].id}`}
               >
                 <ItemButton
                   itemType={from}
                   id={fromItem.id}
                   name={fromItem.name}
-                  context={getContext(from, fromItem)}
+                  playlist={to === itemTypes.PLAYLIST && toItems[0]}
                 />
               </Answer>
             ))}

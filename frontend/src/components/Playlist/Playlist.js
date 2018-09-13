@@ -31,7 +31,6 @@ const Playlist = ({
     tracks,
   } = playlist;
   const year = moment(date).format('YYYY');
-  const context = { type: itemTypes.PLAYLIST, item: playlist };
   const playlistTracks = tracks ? tracks.map(({ track }) => track) : [];
   const trackList = playlistTracks.map(({ id, name: trackName }) => (
     <ItemButton
@@ -39,7 +38,7 @@ const Playlist = ({
       key={id}
       id={id}
       itemType={itemTypes.TRACK}
-      context={context}
+      playlist={playlist}
     />
   ));
 

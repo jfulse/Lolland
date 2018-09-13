@@ -19,7 +19,7 @@ const defaultState = {
 const defaultSettings = {
   autoplay: false,
   showAlbumBackground: true,
-  rounds: 5,
+  rounds: 2,
 };
 
 const defaultGame = {

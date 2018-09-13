@@ -22,7 +22,6 @@ const AlbumButton = ({ id, name, artist }) => (
     key={id}
     id={id}
     itemType={itemTypes.ALBUM}
-    context={{ type: itemTypes.ARTIST, item: artist }}
   />
 );
 

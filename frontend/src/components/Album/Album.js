@@ -36,14 +36,12 @@ const Album = ({
   } = album;
   const year = moment(date).format('YYYY');
   const albumName = hideArtists ? strikeArtistsFromName(artists, name) : name;
-  const context = { type: itemTypes.ALBUM, item: album };
   const artistList = artists.map(({ id, name: artistName }) => (
     <ItemButton
       name={artistName}
       key={id}
       id={id}
       itemType={itemTypes.ARTIST}
-      context={context}
     />
   ));
   const albumTracks = tracks ? tracks.items : [];
@@ -53,7 +51,6 @@ const Album = ({
       key={id}
       id={id}
       itemType={itemTypes.TRACK}
-      context={context}
     />
   ));
 

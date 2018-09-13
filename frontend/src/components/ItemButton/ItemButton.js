@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { compose } from 'recompose';
 import styled from 'styled-components';
 
-import { Collection, Context, Popups } from '../../propTypes';
+import { Collection, Playlist, Popups } from '../../propTypes';
 import { itemTypes } from '../../constants';
 import { capitalize } from '../../utils';
 
@@ -20,7 +20,7 @@ const ItemButton = ({
   itemType,
   id,
   name,
-  context,
+  playlist,
   albums: { get: getAlbum },
   artists: { get: getArtist },
   playlists: { get: getPlaylist },
@@ -53,7 +53,10 @@ const ItemButton = ({
       type="button"
       onClick={async () => {
         const item = await get(id);
-        openPopup(title, title, { [key]: item, context });
+        const popupProps = { [key]: item };
+        if (playlist) Object.assign(popupProps, { playlist });
+
+        openPopup(title, title, popupProps);
       }}
     >
       {name}
@@ -65,12 +68,19 @@ ItemButton.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   itemType: PropTypes.oneOf(Object.keys(itemTypes)).isRequired,
-  context: PropTypes.oneOfType([PropTypes.bool, Context]).isRequired,
+  playlist: PropTypes.oneOfType([
+    PropTypes.bool,
+    Playlist,
+  ]),
   popups: Popups.isRequired,
   albums: Collection.isRequired,
   artists: Collection.isRequired,
   playlists: Collection.isRequired,
   tracks: Collection.isRequired,
+};
+
+ItemButton.defaultProps = {
+  playlist: false,
 };
 
 export default compose(

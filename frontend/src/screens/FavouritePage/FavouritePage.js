@@ -7,7 +7,6 @@ import {
   Album, Artist, If, Playlist, Track,
 } from '../../components';
 import { waitForData } from '../../enhancers';
-import { itemTypes } from '../../constants';
 import { Favourites } from '../../propTypes';
 
 const ItemHeader = styled.h2`
@@ -45,7 +44,6 @@ const FavouritePage = ({
         <Track
           track={track}
           key={track.uri}
-          context={{ type: itemTypes.ARTIST, item: {} }}
         />
       ))}
     </If>

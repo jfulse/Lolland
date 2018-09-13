@@ -104,7 +104,7 @@ class Quiz extends React.Component {
               hidePlaylist={!showAnswer}
               hideCover={!showAnswer}
               emphasize={showAnswer && to}
-              context={{ type: to, item: toItems[0] }}
+              playlist={to === itemTypes.PLAYLIST && toItems[0]}
               autoplay={autoplay}
               showAlbumBackground={showAnswer || showAlbumBackground}
             />

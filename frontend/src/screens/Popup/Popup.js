@@ -46,7 +46,7 @@ const PopupBox = styled.div`
     padding: 0 60px 30px 60px;
     border-radius: 10px;
     border: 1px solid black;
-    margin-top: -300px;
+    margin-top: -200px;
     width: fit-content;
 `;
 

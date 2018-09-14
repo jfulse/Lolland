@@ -6,6 +6,7 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import { compose, lifecycle } from 'recompose';
 import queryString from 'query-string';
+import at from 'lodash.at';
 
 import {
   FavouritePage, Landing, Quiz, Popup, ResultPage, SetupGame,
@@ -67,8 +68,8 @@ const initialise = lifecycle({
 
       try {
         await user.get();
-      } catch ({ error }) {
-        if (error && error.status && error.status === 401) {
+      } catch ({ response }) {
+        if (at(response, 'data.error.status').includes(401)) {
           const currentRefreshToken = refreshToken || localStorage.getItem(STORAGE_REFRESH_TOKEN);
           if (currentRefreshToken) {
             console.log('Using refresh access token', currentRefreshToken);

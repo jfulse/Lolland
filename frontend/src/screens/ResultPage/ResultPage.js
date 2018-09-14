@@ -6,6 +6,8 @@ import styled from 'styled-components';
 import { ItemButton, Panel } from '../../components';
 import { itemTypes, resultTypes } from '../../constants';
 import { Game } from '../../propTypes';
+import { capitalize, intersperse } from '../../utils';
+import { defaultBackground } from '../../styles';
 
 const ResultWrapper = styled.div`
   display: flex;
@@ -13,6 +15,8 @@ const ResultWrapper = styled.div`
   align-items: center;
   padding: 50px;
   flex-direction: column;
+  color: #fdfdfd;
+  text-shadow: 0 0 10px black;
 `;
 
 const Header = styled.h2`
@@ -28,6 +32,7 @@ const ScoreBoard = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
+  background: ${defaultBackground};
 `;
 
 const ScoreHeader = styled.h3`
@@ -40,15 +45,18 @@ const HistoryBoard = styled.div`
   flex-direction: row;
   width: 80%;
   justify-content: space-around;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-auto-rows: auto;
+  align-items: center;
+  grid-row-gap: 6px;
+  grid-column-gap: 10px;
+  font-size: 16px;
 `;
 
-const HistoryColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  h5 {
-    text-align: center;
-  }
+const HistoryHeader = styled.h5`
+  margin: 10px 0;
+  font-size: 17px;
 `;
 
 const Answer = styled.span`
@@ -57,11 +65,7 @@ const Answer = styled.span`
     if (result === resultTypes.WRONG) return 'tomato';
     return 'initial';
   }};
-  font-style: ${({ italic }) => (italic ? 'italic' : 'normal')};
-  margin: 5px;
-`;
-
-const Item = styled.span`
+  visibility: ${({ result }) => (result === resultTypes.PENDING ? 'hidden' : 'visible')};
   margin: 5px;
 `;
 
@@ -93,59 +97,36 @@ const ResultPage = ({
         </ScoreHeader>
         <h4>Rounds:</h4>
         <HistoryBoard>
-          <HistoryColumn>
-            <h5>Clues</h5>
-            {history.map(({
-              result, fromItem, toItems,
-            }) => (
-              <Item
-                result={result}
-                key={`clue-${fromItem.id}-${toItems[0].id}`}
-              >
-                <ItemButton
-                  itemType={from}
-                  id={fromItem.id}
-                  name={fromItem.name}
-                  playlist={to === itemTypes.PLAYLIST && toItems[0]}
-                  dark
-                />
-              </Item>
-            ))}
-          </HistoryColumn>
-          <HistoryColumn>
-            <h5>Answers</h5>
-            {history.map(({
-              answer, result, fromItem: { id: fromId }, toItems: [{ id: toId }],
-            }) => (
-              <Answer
-                result={result}
-                italic={answer == null}
-                key={`answer-${fromId}-${toId}`}
-              >
+          <HistoryHeader>{capitalize(from)}</HistoryHeader>
+          <HistoryHeader>Answer</HistoryHeader>
+          <HistoryHeader>{capitalize(to)}</HistoryHeader>
+          {history.map(({
+            answer, result, fromItem, toItems,
+          }) => (
+            <React.Fragment key={`result-${fromItem.id}-${toItems[0].id}`}>
+              <ItemButton
+                itemType={from}
+                id={fromItem.id}
+                name={fromItem.name}
+                playlist={to === itemTypes.PLAYLIST && toItems[0]}
+                dark
+              />
+              <Answer result={result}>
                 {answer || 'No answer'}
               </Answer>
-            ))}
-          </HistoryColumn>
-          <HistoryColumn>
-            <h5>Solutions</h5>
-            {history.map(({
-              fromItem: { id: fromId }, toItems,
-            }) => (
-              <Item
-                key={`solutions-list-${fromId}`}
-              >
-                {toItems.map(({ id, name }) => (
+              <div>
+                {intersperse(toItems.map(({ id, name }) => (
                   <ItemButton
                     itemType={to}
                     id={id}
-                    key={`solution-${id}`}
+                    key={`result-solution-${id}`}
                     name={name}
                     dark
                   />
-                ))}
-              </Item>
-            ))}
-          </HistoryColumn>
+                )), ', ')}
+              </div>
+            </React.Fragment>
+          ))}
         </HistoryBoard>
       </ScoreBoard>
     </Panel>

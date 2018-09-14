@@ -17,14 +17,14 @@ const defaultState = {
 };
 
 const defaultSettings = {
-  autoplay: false,
+  autoplay: true,
   showAlbumBackground: true,
-  rounds: 2,
+  rounds: 5,
 };
 
 const defaultGame = {
   category: categoryTypes.QUIZ,
-  type: { from: null, to: null },
+  type: { from: itemTypes.ALBUM, to: itemTypes.ARTIST },
   correctAnswers: 0,
   wrongAnswers: 0,
   state: defaultState,

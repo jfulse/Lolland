@@ -12,8 +12,13 @@ const StyledButton = styled.div`
   display: inline;
   &:hover {
     cursor: pointer;
-    filter: ${({ dark }) => (dark ? 'opacity(50%)' : 'brightness(85%)')}};
+    filter: brightness(85%);
+    // filter: ${({ dark }) => (dark ? 'opacity(50%)' : 'brightness(85%)')}};
   }
+  // border: ${({ dark }) => (dark ? '1px solid lightgray' : 'none')};
+  // border-radius: 5px;
+  // padding: ${({ dark }) => (dark ? '3px 5px' : '0')};
+  // width: ${({ dark }) => (dark ? 'fit-content' : 'initial')};
 `;
 
 const ItemButton = ({
